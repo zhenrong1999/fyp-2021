@@ -1,5 +1,5 @@
 module.exports = {
-  entry: "./src/UX/preload.ts",
+  entry: "./src/Electron/preload.ts",
   module: {
     rules: require("./webpack.rules"),
   },

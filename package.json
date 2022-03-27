@@ -51,10 +51,10 @@
               "config": "./webpack.renderer.config.js",
               "entryPoints": [
                 {
-                  "html": "./src/UX/index.html",
-                  "js": "./src/UX/renderer.ts",
+                  "html": "./src/Electron/index.html",
+                  "js": "./src/Electron/renderer.ts",
                   "preload": {
-                    "js": "./src/UX/preload.ts"
+                    "js": "./src/Electron/preload.ts"
                   },
                   "name": "main_window"
                 }
@@ -77,6 +77,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.0",
+    "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.0.0",
     "electron": "17.1.2",
     "eslint": "^8.0.1",
@@ -89,7 +90,12 @@
   },
   "dependencies": {
     "@fluentui/react": "^8.62.0",
+    "@fluentui/react-icons": "^2.0.153-canary.0",
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-env": "^1.16.3",
     "electron-squirrel-startup": "^1.0.0",
+    "file-loader": "^6.2.0",
+    "office-ui-fabric-core": "^11.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }
