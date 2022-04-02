@@ -80,6 +80,7 @@
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.0.0",
     "electron": "17.1.2",
+    "electron-devtools-installer": "^3.2.0",
     "eslint": "^8.0.1",
     "eslint-plugin-import": "^2.25.0",
     "fork-ts-checker-webpack-plugin": "^6.0.1",
@@ -89,10 +90,12 @@
     "typescript": "~4.5.4"
   },
   "dependencies": {
+    "@antv/g6": "^4.6.4",
     "@fluentui/react": "^8.62.0",
     "@fluentui/react-icons": "^2.0.153-canary.0",
     "@types/webpack": "^5.28.0",
     "@types/webpack-env": "^1.16.3",
+    "classnames": "^2.3.1",
     "electron-squirrel-startup": "^1.0.0",
     "file-loader": "^6.2.0",
     "office-ui-fabric-core": "^11.0.0",

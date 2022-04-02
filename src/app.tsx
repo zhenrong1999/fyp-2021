@@ -71,24 +71,24 @@ const labelStyles: Partial<IStyleSet<ILabelStyles>> = {
 export const PivotBasicExample: React.FunctionComponent = () => {
   return (
     <>
-      <Pivot aria-label="Basic Pivot Example">
+      <Pivot aria-label="Navigation">
         <PivotItem
-          headerText="My Files"
+          headerText="Mind Map Canvas"
           headerButtonProps={{
             "data-order": 1,
-            "data-title": "My Files Title",
+            "data-title": "Mind Map Title",
           }}
         >
           <MainMindMap />
         </PivotItem>
-        <PivotItem headerText="Recent">
+        <PivotItem headerText="Ebook">
           <Label styles={labelStyles}>Pivot #2</Label>
         </PivotItem>
-        <PivotItem headerText="Shared with me">
+        <PivotItem headerText="Resources">
           <Label styles={labelStyles}>Pivot #3</Label>
         </PivotItem>
       </Pivot>
-      <PanelNonModalExample />
+      {/* <PanelNonModalExample /> */}
     </>
   );
 };
