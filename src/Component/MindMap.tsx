@@ -9,10 +9,8 @@ import {
 } from "@fluentui/react";
 import G6 from "@antv/g6";
 import { Point } from "@antv/g-base";
-// import classNames from "classnames/bind";
-// import * as styles from "./MindMap.css";
+
 import "./MindMap.css";
-// let cx = classNames.bind(styles);
 
 export const MainMindMap: React.FunctionComponent = () => {
   const ref = React.useRef(null);

@@ -63,6 +63,7 @@ import {
 } from "@fluentui/react";
 import "./Component/MindMap";
 import { MainMindMap } from "./Component/MindMap";
+import { EbookViewer } from "./Component/EbookViewer";
 
 const labelStyles: Partial<IStyleSet<ILabelStyles>> = {
   root: { marginTop: 10 },
@@ -82,7 +83,8 @@ export const PivotBasicExample: React.FunctionComponent = () => {
           <MainMindMap />
         </PivotItem>
         <PivotItem headerText="Ebook">
-          <Label styles={labelStyles}>Pivot #2</Label>
+          <Label styles={labelStyles}>Ebook Management</Label>
+          <EbookViewer />
         </PivotItem>
         <PivotItem headerText="Resources">
           <Label styles={labelStyles}>Pivot #3</Label>

@@ -1,6 +1,5 @@
-import { ipcRenderer, ContextBridge, contextBridge } from "electron";
-import {cpus} from "os";
+import { contextBridge, ipcRenderer} from 'electron';
 
-contextBridge.exposeInMainWorld("api",{
-    threads: cpus().length
+contextBridge.exposeInMainWorld('electronAPI', {
+  openFile: () => ipcRenderer.invoke('dialog:openFile'),
 })
