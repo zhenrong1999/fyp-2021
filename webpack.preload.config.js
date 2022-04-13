@@ -6,4 +6,5 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".json"],
   },
+  optimization:  require("./webpack.optimization"),
 };
