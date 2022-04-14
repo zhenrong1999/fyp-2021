@@ -11,42 +11,52 @@ import {
 import { DetailPanel } from "../../../index";
 import { EditorContextProps } from "../../EditorContext";
 import { DetailPanelComponentProps } from "../../DetailPanel";
-
-// const { Item } = Form;
+import { NodeConfig, EdgeConfig, ComboConfig } from "@antv/g6";
+import { ThemeGenerator } from "@fluentui/react";
 
 interface PanelProps extends EditorContextProps, DetailPanelComponentProps {}
 //
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface PanelState {
+  TargetModel: NodeConfig | EdgeConfig | ComboConfig;
   changedValue: string;
 }
 
 class Panel extends React.Component<PanelProps, PanelState> {
   constructor(props: any) {
     super(props);
-    this.state = { changedValue: "" };
+    this.state = { changedValue: "", TargetModel: null };
     this.onChangeHandler = this.onChangeHandler.bind(this);
   }
   componentDidMount() {
     const { panelType, nodes, edges } = this.props;
     let label = "";
+    let targetModel: NodeConfig | EdgeConfig | ComboConfig;
     if (panelType === "node") {
-      const unknownTypeLabel = nodes[0].getModel().label;
-      if (typeof unknownTypeLabel === "string") {
-        label = unknownTypeLabel;
-      }
+      targetModel = nodes[0].getModel();
     }
 
     if (panelType === "edge") {
-      const unknownTypeLabel = edges[0].getModel().label;
+      targetModel = edges[0].getModel();
+    }
+
+    this.setState({ TargetModel: targetModel });
+
+    if (targetModel) {
+      const unknownTypeLabel = targetModel.label;
       if (typeof unknownTypeLabel === "string") {
         label = unknownTypeLabel;
       }
+
+      this.setState({ changedValue: targetModel.label as string });
     }
-
-    this.setState({ changedValue: label });
   }
-
+  checkString(s: any): string {
+    if (typeof s === "string") {
+      return s;
+    }
+    return "";
+  }
   handleSubmit = (e: React.FormEvent) => {
     if (e && e.preventDefault) {
       e.preventDefault();
@@ -82,26 +92,43 @@ class Panel extends React.Component<PanelProps, PanelState> {
 
   mapPropsToFields = () => {
     const { panelType } = this.props;
-
-    return (
-      <FormInput
-        label={panelType}
-        value={this.state.changedValue}
-        onChange={this.onChangeHandler}
-        onBlur={this.handleSubmit}
-      />
-    );
+    if (this.state.TargetModel) {
+      const { label } = this.state.TargetModel;
+      return (
+        <FormInput
+          label={panelType}
+          value={this.state.changedValue as string}
+          onChange={this.onChangeHandler}
+          onBlur={this.handleSubmit}
+        />
+      );
+    }
   };
   renderNodeDetail = (): any => {
+    const { panelType } = this.props;
+
     return (
       <>
         {this.mapPropsToFields()}
+        {/* <FormInput
+        // label="width"
+        // value={width}
+        // onChange={this.onChangeHandler}
+        // onBlur={this.handleSubmit}
+        /> */}
+        {/* <FormInput
+          label="height"
+          value={height}
+          onChange={this.onChangeHandler}
+          onBlur={this.handleSubmit}
+        /> */}
         <p>a node is selected :) </p>
       </>
     );
   };
 
   renderEdgeDetail = (): any => {
+    const { panelType } = this.props;
     return (
       <>
         {this.mapPropsToFields()} <p>a edge is selected :) </p>

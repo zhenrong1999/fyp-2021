@@ -120,6 +120,14 @@ export const MainMindMap: React.FunctionComponent = () => {
                   type: "circle",
                   size: 50,
                   label: "circle",
+                  linkPoints: {
+                    top: true,
+                    bottom: true,
+                    left: true,
+                    right: true,
+                    fill: "#fff",
+                    size: 5,
+                  },
                 }}
               >
                 <img

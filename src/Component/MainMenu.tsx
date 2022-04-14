@@ -5,46 +5,6 @@ import { EbookViewer } from "./EbookViewer";
 import { Provider, teamsTheme, Menu, Header } from "@fluentui/react-northstar";
 import LoadingPage from "./LoadingPage";
 
-// };
-// import {
-//   IStyleSet,
-//   Label,
-//   ILabelStyles,
-//   Pivot,
-//   PivotItem,
-// } from "@fluentui/react";
-// import { MainMindMap } from "./Component/MindMap";
-// import { EbookViewer } from "./Component/EbookViewer";
-
-// const labelStyles: Partial<IStyleSet<ILabelStyles>> = {
-//   root: { marginTop: 10 },
-// };
-
-// export const PivotBasicExample: React.FunctionComponent = () => {
-//   return (
-//     <>
-//       <Pivot style={{ width: "100%" }} aria-label="Navigation">
-//         <PivotItem
-//           headerText="Mind Map Canvas"
-//           headerButtonProps={{
-//             "data-order": 1,
-//             "data-title": "Mind Map Title",
-//           }}
-//         >
-//           <MainMindMap />
-//         </PivotItem>
-//         <PivotItem headerText="Ebook">
-//           <Label styles={labelStyles}>Ebook Management</Label>
-//           <EbookViewer />
-//         </PivotItem>
-//         <PivotItem headerText="Resources">
-//           <Label styles={labelStyles}>Pivot #3</Label>
-//         </PivotItem>
-//       </Pivot>
-//       {/* <PanelNonModalExample /> */}
-//     </>
-//   );
-// };
 const divRef = React.createRef<HTMLDivElement>();
 
 export const MainMenu: React.FunctionComponent = () => {
@@ -93,3 +53,40 @@ export const MainMenu: React.FunctionComponent = () => {
     </Provider>
   );
 };
+
+// import {
+//   IStyleSet,
+//   Label,
+//   ILabelStyles,
+//   Pivot,
+//   PivotItem,
+// } from "@fluentui/react";
+
+// const labelStyles: Partial<IStyleSet<ILabelStyles>> = {
+//   root: { marginTop: 10 },
+// };
+
+// export const MainMenu: React.FunctionComponent = () => {
+//   return (
+//     <>
+//       <Pivot style={{ width: "100%" }} aria-label="Navigation">
+//         <PivotItem
+//           headerText="Mind Map Canvas"
+//           headerButtonProps={{
+//             "data-order": 1,
+//             "data-title": "Mind Map Title",
+//           }}
+//         >
+//           <MainMindMap />
+//         </PivotItem>
+//         <PivotItem headerText="Ebook">
+//           <Label styles={labelStyles}>Ebook Management</Label>
+//           <EbookViewer />
+//         </PivotItem>
+//         <PivotItem headerText="Resources">
+//           <Label styles={labelStyles}>Pivot #3</Label>
+//         </PivotItem>
+//       </Pivot>
+//     </>
+//   );
+// };

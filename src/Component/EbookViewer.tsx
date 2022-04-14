@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 import { Document, Page } from "react-pdf/dist/esm/entry.webpack";
 
+import { PDFDocumentProxy } from "pdfjs-dist";
 export const EbookViewer: React.FunctionComponent = () => {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  function onDocumentLoadSuccess(numPages?: number) {
+  function onDocumentLoadSuccess(pdf: PDFDocumentProxy) {
+    const numPages = pdf.numPages;
     setNumPages(numPages);
   }
 
@@ -23,12 +25,11 @@ export const EbookViewer: React.FunctionComponent = () => {
       <button ref={buttonRef} onClick={openFile}>
         Open PDF
       </button>
-      <Document file={filePath}>
-        <Page pageNumber={pageNumber} />
+      <Document file={filePath} onLoadSuccess={onDocumentLoadSuccess}>
+        {Array.from(new Array(numPages), (el, index) => (
+          <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+        ))}
       </Document>
-      <p>
-        Page {pageNumber} of {numPages}{" "}
-      </p>
     </div>
   );
 };
