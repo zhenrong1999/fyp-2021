@@ -1,3 +1,4 @@
+path = require("path");
 rules = require("./webpack.rules");
 plugins = require("./webpack.plugins");
 
@@ -17,8 +18,18 @@ plugins.push(
   new CopyPlugin({
     patterns: [
       {
-        from: "node_modules/@fluentui/font-icons-mdl2/fonts/",
-        to: "fonts",
+        from: path.join(
+          path.dirname(require.resolve("pdfjs-dist/package.json")),
+          "cmaps"
+        ),
+        to: "pdfjs-dist/cmaps/",
+      },
+      {
+        from: path.join(
+          path.dirname(require.resolve("pdfjs-dist/package.json")),
+          "build"
+        ),
+        to: "pdfjs-dist/build/",
       },
     ],
   })

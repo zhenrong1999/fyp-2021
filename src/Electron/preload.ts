@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer} from 'electron';
 
 const files={
-  openFile: () => ipcRenderer.invoke('dialog:openFile')
+  openFile: () => ipcRenderer.invoke('dialog:openFile'),
+  getTempPath: () => ipcRenderer.invoke('app:getTempPath')
 }
 const browserWindow={
   getSize: () => ipcRenderer.invoke('browserWindow:getSize')

@@ -60,10 +60,15 @@ async function handleFileOpen() {
     return filePaths[0]
   }
 }
+
+async function getTempPath(){
+  return app.getPath("temp");
+}
 app.whenReady().then(() => {
 
   ipcMain.handle('dialog:openFile', handleFileOpen);
   ipcMain.handle('browserWindow:getSize', getSize);
+  ipcMain.handle('app:getTempPath', getTempPath);
   // installExtension(REACT_DEVELOPER_TOOLS)
   //     .then((name) => console.log(`Added Extension:  ${name}`))
   //     .catch((err) => console.log('An error occurred: ', err));

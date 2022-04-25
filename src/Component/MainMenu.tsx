@@ -1,31 +1,25 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { MainMindMap } from "./MindMap";
-import { EbookViewer } from "./EbookViewer";
-import { Provider, teamsTheme, Menu, Header } from "@fluentui/react-northstar";
-import LoadingPage from "./LoadingPage";
+import { EbookManagement } from "./EbookManagement";
+import {
+  Provider,
+  teamsTheme,
+  Menu,
+  Header,
+  MenuItemProps,
+} from "@fluentui/react-northstar";
+import { LoadingPage } from "./LoadingPage";
 
 const divRef = React.createRef<HTMLDivElement>();
 
 export const MainMenu: React.FunctionComponent = () => {
-  function changePage(key: string): void {
-    if (key === "MindMapCanvas") {
-      ReactDOM.render(<MainMindMap />, divRef.current);
-    } else if (key === "Ebook") {
-      ReactDOM.render(<EbookViewer />, divRef.current);
-    } else if (key === "Resources") {
-      ReactDOM.render(
-        <>
-          <Header content="Under Construction" />
-          <LoadingPage />
-        </>,
-        divRef.current
-      );
-    }
+  const [MenuIndex, setMenuIndex] = React.useState(0);
+  function changePage(ev: React.SyntheticEvent, props: MenuItemProps): void {
+    // const index = ev.currentTarget;
+    console.log(props.index);
+    setMenuIndex(props.index);
   }
-  useEffect(() => {
-    changePage("MindMapCanvas");
-  }, []);
   return (
     <Provider theme={teamsTheme}>
       <Menu
@@ -34,21 +28,24 @@ export const MainMenu: React.FunctionComponent = () => {
           {
             key: "MindMapCanvas",
             content: "Mind Map Canvas",
-            onClick: () => changePage("MindMapCanvas"),
+            onClick: changePage,
           },
           {
             key: "Ebook",
             content: "Ebook",
-            onClick: () => changePage("Ebook"),
+            onClick: changePage,
           },
           {
             key: "Resources",
             content: "Resources",
-            onClick: () => changePage("Resources"),
+            onClick: changePage,
           },
         ]}
         primary
       />
+      {MenuIndex === 0 && <MainMindMap />}
+      {MenuIndex === 1 && <EbookManagement />}
+      {MenuIndex === 2 && <LoadingPage />}
       <div ref={divRef}></div>
     </Provider>
   );

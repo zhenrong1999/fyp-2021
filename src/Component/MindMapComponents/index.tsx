@@ -17,7 +17,10 @@ import {
   RegisterCommand,
   RegisterBehavior,
 } from "./ComponentParts/Register";
-import { withEditorContext } from "./ComponentParts/EditorContext";
+import {
+  EditorContextProps,
+  withEditorContext,
+} from "./ComponentParts/EditorContext";
 import { baseCommand } from "./ComponentParts/Graph/command/base";
 
 import ItemPopover from "./ComponentParts/ItemPopover";
@@ -52,6 +55,7 @@ export {
   RegisterEdge,
   RegisterCommand,
   RegisterBehavior,
+  EditorContextProps,
   withEditorContext,
   baseCommand,
   ItemPopover,

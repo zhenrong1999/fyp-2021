@@ -1,7 +1,7 @@
 import React from "react";
 import isArray from "lodash/isArray";
 import pick from "lodash/pick";
-import global from "../../common/global";
+
 import {
   RendererType,
   EditorEvent,

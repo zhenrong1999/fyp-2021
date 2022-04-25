@@ -182,3 +182,11 @@ export function getMindRecallEdges(graph: TreeGraph, node: Node,edges: Edge[] = 
 
   return getMindRecallEdges(graph, parentNode, edges);
 }
+
+
+export function getVariableName<TResult>(name: () => TResult) {
+    const varExtractor = new RegExp("return (.*);");
+    const  m = varExtractor.exec(name + "");
+    if (m == null) throw new Error("The function does not contain a statement matching 'return variableName;'");
+    return m[1];
+}

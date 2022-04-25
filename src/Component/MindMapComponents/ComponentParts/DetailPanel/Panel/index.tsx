@@ -2,19 +2,21 @@ import React from "react";
 import upperFirst from "lodash/upperFirst";
 import {
   Card,
-  FormFieldProps,
   FormInput,
   Form,
-  Input,
   Header,
+  ProviderProps,
 } from "@fluentui/react-northstar";
 import { DetailPanel } from "../../../index";
 import { EditorContextProps } from "../../EditorContext";
 import { DetailPanelComponentProps } from "../../DetailPanel";
 import { NodeConfig, EdgeConfig, ComboConfig } from "@antv/g6";
-import { ThemeGenerator } from "@fluentui/react";
+import { getVariableName } from "../../../common/utils";
 
-interface PanelProps extends EditorContextProps, DetailPanelComponentProps {}
+interface PanelProps
+  extends EditorContextProps,
+    DetailPanelComponentProps,
+    ProviderProps {}
 //
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface PanelState {
@@ -30,7 +32,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
   }
   componentDidMount() {
     const { panelType, nodes, edges } = this.props;
-    let label = "";
+    // let label = "";
     let targetModel: NodeConfig | EdgeConfig | ComboConfig;
     if (panelType === "node") {
       targetModel = nodes[0].getModel();
@@ -43,10 +45,10 @@ class Panel extends React.Component<PanelProps, PanelState> {
     this.setState({ TargetModel: targetModel });
 
     if (targetModel) {
-      const unknownTypeLabel = targetModel.label;
-      if (typeof unknownTypeLabel === "string") {
-        label = unknownTypeLabel;
-      }
+      // const unknownTypeLabel = targetModel.label;
+      // if (typeof unknownTypeLabel === "string") {
+      //   label = unknownTypeLabel;
+      // }
 
       this.setState({ changedValue: targetModel.label as string });
     }
@@ -96,6 +98,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
       const { label } = this.state.TargetModel;
       return (
         <FormInput
+          name={getVariableName(() => label) as string}
           label={panelType}
           value={this.state.changedValue as string}
           onChange={this.onChangeHandler}
