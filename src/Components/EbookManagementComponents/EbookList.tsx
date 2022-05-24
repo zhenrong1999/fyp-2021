@@ -1,22 +1,14 @@
 import React from "react";
 import { Box, List, Button } from "@fluentui/react-northstar";
+import { AddEbook, AddEbookProps } from "./AddEbook";
 import { setSelectedItems } from "../MindMapComponents/common/utils";
 
-interface EbookListProps {
+interface EbookListProps extends AddEbookProps {
   className?: string;
-  setFilePath: (filePath: string) => void;
 }
 
 export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
   const [selectedIndex, setSelectedIndex] = React.useState(-1);
-  // const [filePath, setFilePath] = React.useState(
-  //   "F:/Teh%20Zhen%20Rong/Downloads/PPSK_JW_Sem2_2021-2022.pdf"
-  // );
-
-  async function openFile() {
-    // When the button is clicked, open the native file picker to select a PDF.
-    props.setFilePath(await window.api.files.openFile());
-  }
 
   const items = [
     {
@@ -31,7 +23,12 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
     },
     {
       key: "addButtton",
-      content: <Button content="Add Ebook" onClick={openFile} />,
+      content: (
+        <AddEbook
+          setFilePath={props.setFilePath}
+          setFileBlob={props.setFileBlob}
+        />
+      ),
     },
   ];
 

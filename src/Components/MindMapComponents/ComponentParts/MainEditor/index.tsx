@@ -21,6 +21,7 @@ interface EditorProps {
   className?: string;
   [EditorEvent.onBeforeExecuteCommand]?: (e: CommandEvent) => void;
   [EditorEvent.onAfterExecuteCommand]?: (e: CommandEvent) => void;
+  children?: React.ReactNode;
 }
 
 interface EditorState extends EditorContextProps, EditorPrivateContextProps {}

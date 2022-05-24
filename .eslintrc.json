@@ -13,5 +13,6 @@
     "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": ["node_modules/*", "webpack*"]
+  "ignorePatterns": ["node_modules/*", "webpack*"],
+  "rules": { "@typescript-eslint/ban-ts-ignore": "off" }
 }

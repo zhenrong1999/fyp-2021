@@ -9,7 +9,7 @@ import {
 } from "@fluentui/react-northstar";
 import { DetailPanel } from "../../../index";
 import { EditorContextProps } from "../../EditorContext";
-import { DetailPanelComponentProps } from "../../DetailPanel";
+import { DetailPanelComponentProps } from "..";
 import { NodeConfig, EdgeConfig, ComboConfig } from "@antv/g6";
 import { getVariableName } from "../../../common/utils";
 
@@ -17,8 +17,7 @@ interface PanelProps
   extends EditorContextProps,
     DetailPanelComponentProps,
     ProviderProps {}
-//
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 interface PanelState {
   TargetModel: NodeConfig | EdgeConfig | ComboConfig;
   changedValue: string;

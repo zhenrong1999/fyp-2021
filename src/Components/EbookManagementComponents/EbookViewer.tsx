@@ -2,10 +2,10 @@ import React from "react";
 import { ProviderProps } from "@fluentui/react-northstar";
 import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "../../assets/TextLayer.css";
-import Frame from "react-frame-component";
+import "./TextLayer.css";
 interface EbookViewerProps extends ProviderProps {
   filePath: string;
+  fileBlob: string;
 }
 
 export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
@@ -19,19 +19,9 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
     setNumPages(numPages);
   }
   return (
-    // <Frame
-    //   initialContent='<!DOCTYPE html><html>
-    //   <head><meta
-    //   http-equiv="Content-Security-Policy"
-    //   content="default-src "unsafe-inline" data: file: *; "
-    //   />
-    // </head><body><div id="mountHere"></div></body></html>'
-    //   mountTarget="#mountHere"
-    //   style={{ width: "70%", height: "100%" }}
-    // >
     <Document
-    className='DocumentRendered'
-      file={props.filePath}
+      className="DocumentRendered"
+      file={`data:application/pdf;base64,${props.fileBlob}`}
       onLoadSuccess={onDocumentLoadSuccess}
       renderMode="canvas"
       options={{
@@ -44,7 +34,4 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
       ))}
     </Document>
   );
-  {
-    /* </Frame> */
-  }
 };

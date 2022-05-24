@@ -37,6 +37,7 @@ interface GraphProps
   initGraph(width: number, height: number): Graph;
   setGraph: (graph: Graph) => void;
   commandManager: CommandManager;
+  children?: React.ReactNode;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

@@ -7,6 +7,7 @@ interface CommandProps extends EditorContextProps {
   name: string;
   className?: string;
   disabledClassName?: string;
+  children?: React.ReactNode;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -24,7 +25,8 @@ class Command extends React.Component<CommandProps, CommandState> {
 
   componentDidMount() {
     const { graph, name } = this.props;
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     const commandManager: CommandManager = graph.get("commandManager");
 
     this.setState({

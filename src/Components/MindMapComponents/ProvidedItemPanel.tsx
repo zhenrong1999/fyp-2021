@@ -6,9 +6,7 @@ interface ProvidedItemPanel extends EditorContextProps {
   className?: string;
 }
 
-export const ProvidedItemPanel: React.FunctionComponent<
-  ProvidedItemPanel
-> = () => {
+export const ProvidedItemPanel: React.FC<ProvidedItemPanel> = () => {
   return (
     <ItemPanel className="itemPanel">
       <Item

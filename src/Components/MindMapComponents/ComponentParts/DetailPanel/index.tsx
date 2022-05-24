@@ -31,10 +31,11 @@ class DetailPanel {
 
         componentDidMount() {
           const { graph } = this.props;
-
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           graph.on(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-expect-error
+            // @ts-ignore
             EditorEvent.onGraphStateChange,
             ({ graphState }: GraphStateEvent) => {
               this.setState({
@@ -56,6 +57,8 @@ class DetailPanel {
           const edges = getSelectedEdges(graph);
 
           return (
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             <WrappedComponent
               panelType={type}
               nodes={nodes}

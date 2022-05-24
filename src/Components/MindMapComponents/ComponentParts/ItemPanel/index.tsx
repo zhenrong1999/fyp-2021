@@ -9,6 +9,7 @@ import Item from "./Item";
 interface ItemPanelProps extends EditorContextProps {
   style?: React.CSSProperties;
   className?: string;
+  children?: React.ReactNode;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
