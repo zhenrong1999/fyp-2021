@@ -143,9 +143,16 @@ class EditableLabel extends React.Component<
     }
 
     const model = node.getModel();
+    1;
     const group = node.getContainer();
 
-    const label = model.label;
+    let label = "";
+    if (typeof model.label === "string") {
+      label = model.label;
+    } else {
+      label = model.label.text;
+    }
+
     const labelShape = group.findByClassName(labelClassName);
 
     if (!labelShape) {

@@ -10,6 +10,7 @@ export interface ItemProps extends EditorContextProps {
   className?: string;
   type?: ItemType;
   model: Partial<NodeModel>;
+  children?: React.ReactNode;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
