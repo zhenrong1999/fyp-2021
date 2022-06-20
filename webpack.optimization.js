@@ -1,5 +1,5 @@
 module.exports = {
-  moduleIds: "deterministic",
+  runtimeChunk: true,
   splitChunks: {
     cacheGroups: {
       defaultVendors: {

@@ -1,17 +1,18 @@
 import React from "react";
 import upperFirst from "lodash/upperFirst";
 import {
-  Card,
+  Layout,
   FormInput,
   Form,
   Header,
   ProviderProps,
 } from "@fluentui/react-northstar";
-import { DetailPanel } from "../../../index";
-import { EditorContextProps } from "../../EditorContext";
-import { DetailPanelComponentProps } from "..";
+import { DetailPanel } from "../../index";
+import { EditorContextProps } from "../EditorContext";
+import { DetailPanelComponentProps } from "../DetailPanel";
 import { NodeConfig, EdgeConfig, ComboConfig } from "@antv/g6";
-import { getVariableName } from "../../../common/utils";
+import { NotePanel } from "../../../NoteComponents";
+import { toNumber } from "lodash";
 
 interface PanelProps
   extends EditorContextProps,
@@ -97,7 +98,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
       const { label } = this.state.TargetModel;
       return (
         <FormInput
-          name={getVariableName(() => label) as string}
+          name={"label"}
           label={panelType}
           value={this.state.changedValue as string}
           onChange={this.onChangeHandler}
@@ -108,10 +109,10 @@ class Panel extends React.Component<PanelProps, PanelState> {
   };
   renderNodeDetail = (): any => {
     const { panelType } = this.props;
-
     return (
       <>
         {this.mapPropsToFields()}
+
         {/* <FormInput
         // label="width"
         // value={width}
@@ -124,6 +125,9 @@ class Panel extends React.Component<PanelProps, PanelState> {
           onChange={this.onChangeHandler}
           onBlur={this.handleSubmit}
         /> */}
+        {this.state.TargetModel && (
+          <NotePanel MindMapNodeId={toNumber(this.state.TargetModel.id)} />
+        )}
         <p>a node is selected :) </p>
       </>
     );
@@ -149,15 +153,23 @@ class Panel extends React.Component<PanelProps, PanelState> {
   render() {
     const type = this.props.panelType.valueOf();
     return (
-      <Card>
-        <Header as="h2" content={upperFirst(type)} />
-        <Form>
-          {type === "node" && this.renderNodeDetail()}
-          {type === "edge" && this.renderEdgeDetail()}
-          {type === "multi" && this.renderMultiDetail()}
-          {type === "canvas" && this.renderCanvasDetail()}
-        </Form>
-      </Card>
+      <Layout
+        vertical
+        start={<Header as="h2" content={upperFirst(type)} />}
+        main={
+          <Form
+            style={{
+              overflowX: "auto",
+              overflowY: "auto",
+            }}
+          >
+            {type === "node" && this.renderNodeDetail()}
+            {type === "edge" && this.renderEdgeDetail()}
+            {type === "multi" && this.renderMultiDetail()}
+            {type === "canvas" && this.renderCanvasDetail()}
+          </Form>
+        }
+      />
     );
   }
 }

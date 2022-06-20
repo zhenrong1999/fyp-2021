@@ -4,6 +4,8 @@
     "es6": true,
     "node": true
   },
+  "plugins": ["@typescript-eslint", "import"],
+
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -11,9 +13,16 @@
     "plugin:import/recommended",
     "plugin:import/electron",
     "plugin:import/typescript",
-    "plugin:jest/recommended"
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
   ],
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": ["node_modules/*", "webpack*"],
-  "rules": { "@typescript-eslint/ban-ts-ignore": "off" }
+  "ignorePatterns": ["node_modules/*", "webpack*", "__tests__/*"],
+  "rules": { "@typescript-eslint/ban-ts-ignore": "off" },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }

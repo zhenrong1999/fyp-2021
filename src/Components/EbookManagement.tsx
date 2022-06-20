@@ -4,28 +4,27 @@ import { EbookList, EbookViewer } from "./EbookManagementComponents";
 
 import { ProviderProps, Flex } from "@fluentui/react-northstar";
 import "./EbookManagement.css";
+import {
+  EbookBlobManagementEditableProps,
+  globalData,
+} from "./Global/interface";
 
-export const EbookManagement: React.FunctionComponent<ProviderProps> = (
+interface EbookManagementProps
+  extends ProviderProps,
+    EbookBlobManagementEditableProps,
+    globalData {}
+
+export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
   props
 ) => {
-  const [filePath, setFilePath] = useState(
-    "F:/Teh%20Zhen%20Rong/Downloads/PPSK_JW_Sem2_2021-2022.pdf"
-  );
   const [fileBlob, setFileBlob] = useState<string>();
 
   return (
     <>
       {/* <Flex gap="gap.small"> */}
-      <EbookList
-        className="ebookPanel"
-        setFilePath={setFilePath}
-        setFileBlob={setFileBlob}
-      />
-      <EbookViewer
-        className="pdfViewer"
-        filePath={filePath}
-        fileBlob={fileBlob}
-      />
+      <EbookList className="ebookPanel" setFileBlob={setFileBlob} {...props} />
+      <EbookViewer className="pdfViewer" fileBlob={fileBlob} {...props} />
+
       {/* </Flex> */}
     </>
   );

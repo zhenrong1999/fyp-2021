@@ -7,7 +7,7 @@ import {
   EditorEvent,
   GraphCommonEvent,
 } from "../../common/constants";
-import { Graph, CommandEvent } from "../../common/interfaces";
+import { Graph, CommandEvent, MindData } from "../../common/interfaces";
 import CommandManager from "../../common/commandManager";
 import {
   EditorContext,
@@ -22,6 +22,7 @@ interface EditorProps {
   [EditorEvent.onBeforeExecuteCommand]?: (e: CommandEvent) => void;
   [EditorEvent.onAfterExecuteCommand]?: (e: CommandEvent) => void;
   children?: React.ReactNode;
+  setGraph?: (graph: MindData) => void;
 }
 
 interface EditorState extends EditorContextProps, EditorPrivateContextProps {}
@@ -150,6 +151,12 @@ class MainEditor extends React.Component<EditorProps, EditorState> {
     this.setState({
       graph,
     });
+
+    if (this.props.setGraph) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-expect-error
+      this.props.setGraph(graph.save());
+    }
 
     this.bindEvent(graph);
     this.bindShortcut(graph);

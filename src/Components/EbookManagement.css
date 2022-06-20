@@ -1,19 +1,20 @@
 .ebookPanel {
-    float: left;
-    display: flex;
-    position:sticky;
-    /* flex-direction: column;
+  float: left;
+  display: flex;
+  position: sticky;
+  /* flex-direction: column;
     align-items: center; */
-    top: 4rem;
-    padding: 24px;
-    height: 100%;
-    /* background: #ffffff; */
-    border-right: 1px solid #e8e8e8;
-  }
-  .pdfViewer{
-    width: 75%;
-    height: 100%;
-    border: 1px solid #e8e8e8;
-    border-radius: 4px;
-    overflow: scroll;
-  }
+  top: 4rem;
+  padding: 24px;
+  height: 100%;
+  /* background: #ffffff; */
+  border-right: 1px solid #e8e8e8;
+  width: 25%;
+}
+.pdfViewer {
+  width: 75%;
+  height: 100%;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  overflow: scroll;
+}

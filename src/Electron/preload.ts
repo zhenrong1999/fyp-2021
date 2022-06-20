@@ -1,15 +1,23 @@
+import { faDatabase } from "@fortawesome/free-solid-svg-icons";
 import { contextBridge, ipcRenderer } from "electron";
 import { readFile } from "fs";
-
+import { db } from "../Database";
 const files = {
-  openFile: () => ipcRenderer.invoke("dialog:openFile"),
+  openEbookFileDialog: () => ipcRenderer.invoke("dialog:openEbookFile"),
+  openMindMapFileDialog: () => ipcRenderer.invoke("dialog:openMindMapFile"),
+  saveMindMapFileDialog: () => ipcRenderer.invoke("dialog:saveMindMapFile"),
   getTempPath: () => ipcRenderer.invoke("app:getTempPath"),
-  getFileByteBlob: (filePath: string) =>
-    ipcRenderer.invoke("app:getFileByteBlob", filePath),
+  writeFile: (filePath: string, data?: string) =>
+    ipcRenderer.invoke("app:writeFile", filePath, data),
+  writeFileTest: (filePath: string) =>
+    ipcRenderer.invoke("app:writeFile", filePath),
 };
 
 const browserWindow = {
   getSize: () => ipcRenderer.invoke("browserWindow:getSize"),
+  getDb: () => {
+    return db;
+  },
 };
 export const API = {
   files: files,

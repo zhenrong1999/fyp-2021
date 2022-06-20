@@ -14,6 +14,7 @@ import {
   Graph,
   GraphOptions,
   MindData,
+  FlowData,
   GraphReactEventProps,
 } from "../../common/interfaces";
 import "./command";
@@ -21,7 +22,7 @@ import "./command";
 interface MindProps extends Partial<GraphReactEventProps> {
   style?: React.CSSProperties;
   className?: string;
-  data: MindData;
+  data: FlowData | MindData;
   graphConfig?: Partial<GraphOptions>;
   customModes?: (mode: string, behaviors: any) => object;
 }

@@ -1,39 +1,39 @@
 .g6-tooltip {
-    border: 1px solid #e2e2e2;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #545454;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 10px 8px;
-    box-shadow: rgb(174, 174, 174) 0px 0px 10px;
-  }
-  .g6-component-toolbar {
-    position: relative;
-    height: 24px;
-  }
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #545454;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px 8px;
+  box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+}
+.g6-component-toolbar {
+  position: relative;
+  height: 24px;
+}
 
-  .itemPanel {
-    float: left;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px;
-    height: 500px;
-    background: #ffffff;
-    border-right: 1px solid #e8e8e8;
-  }
-  .itemPanel .item {
-    margin-bottom: 24px;
-    user-select: none;
-  }
-  .itemPanel .item img {
-    display: block;
-  }
+.itemPanel {
+  float: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  height: 500px;
+  background: #ffffff;
+  border-right: 1px solid #e8e8e8;
+}
+.itemPanel .item {
+  margin-bottom: 24px;
+  user-select: none;
+}
+.itemPanel .item img {
+  display: block;
+}
 
-  .detailPanel {
-    float: right;
-    width: 300px;
-    height: 500px;
-    background-color: #ffffff;
-    border-left: 1px solid #e8e8e8;
-  }
+.detailPanel {
+  float: right;
+  width: fit-content;
+  height: 100%;
+  background-color: #ffffff;
+  border-left: 1px solid #e8e8e8;
+}

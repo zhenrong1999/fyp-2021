@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -11,9 +12,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
+    "target": "es6",
     "paths": {
-      "*": ["node_modules/*"],
-      "@App/*": ["src/*"]
+      "@App": ["src"],
+      "*": ["node_modules/*"]
     }
   },
   "include": ["src/**/*", "__test__"]
