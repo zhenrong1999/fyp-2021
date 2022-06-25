@@ -1,11 +1,14 @@
 import React from "react";
 import upperFirst from "lodash/upperFirst";
 import {
-  Layout,
   FormInput,
   Form,
   Header,
   ProviderProps,
+  Flex,
+  Status,
+  AcceptIcon,
+  BanIcon,
 } from "@fluentui/react-northstar";
 import { DetailPanel } from "../../index";
 import { EditorContextProps } from "../EditorContext";
@@ -13,6 +16,16 @@ import { DetailPanelComponentProps } from "../DetailPanel";
 import { NodeConfig, EdgeConfig, ComboConfig } from "@antv/g6";
 import { NotePanel } from "../../../NoteComponents";
 import { toNumber } from "lodash";
+import { NodePath } from "../NodePath";
+import { TreeGraph, Node, Edge } from "../../common/interfaces";
+import { ItemState } from "../../common/constants";
+import {
+  executeBatch,
+  getMindRecallEdges,
+  setHighLightState,
+  clearHighLightState,
+} from "../../common/utils";
+import { capitalize } from "lodash";
 
 interface PanelProps
   extends EditorContextProps,
@@ -22,12 +35,21 @@ interface PanelProps
 interface PanelState {
   TargetModel: NodeConfig | EdgeConfig | ComboConfig;
   changedValue: string;
+  labelStatus: { state: string; icon: JSX.Element; title: string };
 }
 
 class Panel extends React.Component<PanelProps, PanelState> {
   constructor(props: any) {
     super(props);
-    this.state = { changedValue: "", TargetModel: null };
+    this.state = {
+      changedValue: "",
+      TargetModel: null,
+      labelStatus: {
+        state: "success",
+        icon: <AcceptIcon />,
+        title: "saved",
+      },
+    };
     this.onChangeHandler = this.onChangeHandler.bind(this);
   }
   componentDidMount() {
@@ -53,6 +75,44 @@ class Panel extends React.Component<PanelProps, PanelState> {
       this.setState({ changedValue: targetModel.label as string });
     }
   }
+  shouldComponentUpdate(
+    nextProps: Readonly<PanelProps>,
+    nextState: Readonly<PanelState>,
+    nextContext: any
+  ): boolean {
+    if (
+      nextProps.nodes[0] !== this.props.nodes[0] ||
+      nextState.TargetModel !== this.state.TargetModel ||
+      nextState.changedValue !== this.state.changedValue ||
+      nextState.labelStatus !== this.state.labelStatus
+    ) {
+      console.log("shouldComponentUpdate", nextProps, nextState);
+      return true;
+    }
+    return false;
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<PanelProps>,
+    prevState: Readonly<PanelState>,
+    snapshot?: any
+  ): void {
+    if (prevProps.nodes !== this.props.nodes) {
+      if (this.props.nodes[0].getModel) {
+        const targetModel = this.props.nodes[0].getModel();
+        this.setState({ TargetModel: targetModel });
+        this.setState({ changedValue: targetModel.label as string });
+        setHighLightState(this.props.graph, targetModel.id);
+      }
+    }
+  }
+
+  componentWillUnmount(): void {
+    if (this.state.TargetModel) {
+      clearHighLightState(this.props.graph);
+    }
+  }
+
   checkString(s: any): string {
     if (typeof s === "string") {
       return s;
@@ -78,6 +138,13 @@ class Panel extends React.Component<PanelProps, PanelState> {
         label: changedValue,
       },
     });
+    this.setState({
+      labelStatus: {
+        state: "success",
+        icon: <AcceptIcon />,
+        title: "saved",
+      },
+    });
     console.log("Saved");
   };
 
@@ -87,6 +154,9 @@ class Panel extends React.Component<PanelProps, PanelState> {
     // const name = target.name;
 
     this.setState({ changedValue: value });
+    this.setState({
+      labelStatus: { state: "error", icon: <BanIcon />, title: "unsaved" },
+    });
     // this.setState({
     //   [name]: value,
     // });
@@ -97,13 +167,22 @@ class Panel extends React.Component<PanelProps, PanelState> {
     if (this.state.TargetModel) {
       const { label } = this.state.TargetModel;
       return (
-        <FormInput
-          name={"label"}
-          label={panelType}
-          value={this.state.changedValue as string}
-          onChange={this.onChangeHandler}
-          onBlur={this.handleSubmit}
-        />
+        <Flex>
+          <FormInput
+            name={"label"}
+            label={capitalize(panelType) + " Label"}
+            value={this.state.changedValue as string}
+            onChange={this.onChangeHandler}
+            onBlur={this.handleSubmit}
+          />
+          <Status
+            state={
+              this.state.labelStatus.state === "success" ? "success" : "error"
+            }
+            icon={this.state.labelStatus.icon}
+            title={this.state.labelStatus.title}
+          />
+        </Flex>
       );
     }
   };
@@ -113,21 +192,22 @@ class Panel extends React.Component<PanelProps, PanelState> {
       <>
         {this.mapPropsToFields()}
 
-        {/* <FormInput
-        // label="width"
-        // value={width}
-        // onChange={this.onChangeHandler}
-        // onBlur={this.handleSubmit}
-        /> */}
-        {/* <FormInput
-          label="height"
-          value={height}
-          onChange={this.onChangeHandler}
-          onBlur={this.handleSubmit}
-        /> */}
         {this.state.TargetModel && (
-          <NotePanel MindMapNodeId={toNumber(this.state.TargetModel.id)} />
+          <>
+            <NotePanel
+              MindMapNodeId={toNumber(this.state.TargetModel.id)}
+              graphClass={this.props.graph}
+              setGraphClass={undefined}
+              disableNodeLabelRename={true}
+              {...this.props}
+            />
+            <NodePath
+              CurrentNodeId={this.state.TargetModel.id}
+              {...this.props}
+            />
+          </>
         )}
+
         <p>a node is selected :) </p>
       </>
     );
@@ -153,14 +233,21 @@ class Panel extends React.Component<PanelProps, PanelState> {
   render() {
     const type = this.props.panelType.valueOf();
     return (
-      <Layout
-        vertical
-        start={<Header as="h2" content={upperFirst(type)} />}
-        main={
+      <Flex
+        fill
+        column
+        padding="padding.medium"
+        style={{ overflowY: "scroll" }}
+      >
+        <Flex.Item>
+          <Header as="h2" content={upperFirst(type)} />
+        </Flex.Item>
+
+        <Flex.Item>
           <Form
             style={{
               overflowX: "auto",
-              overflowY: "auto",
+              overflowY: "scroll",
             }}
           >
             {type === "node" && this.renderNodeDetail()}
@@ -168,8 +255,8 @@ class Panel extends React.Component<PanelProps, PanelState> {
             {type === "multi" && this.renderMultiDetail()}
             {type === "canvas" && this.renderCanvasDetail()}
           </Form>
-        }
-      />
+        </Flex.Item>
+      </Flex>
     );
   }
 }

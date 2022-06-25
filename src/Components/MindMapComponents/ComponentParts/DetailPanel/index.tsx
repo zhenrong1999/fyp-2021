@@ -55,6 +55,7 @@ class DetailPanel {
 
           const nodes = getSelectedNodes(graph);
           const edges = getSelectedEdges(graph);
+          console.log(type, nodes);
 
           return (
             <WrappedComponent

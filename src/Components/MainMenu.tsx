@@ -1,77 +1,102 @@
 import React from "react";
-import { MainMindMap } from "./MindMap";
-import { EbookManagement } from "./EbookManagement";
+import { MainMindMap } from "./MindMapComponents/MindMap";
+import { EbookManagement } from "./EbookManagementComponents/EbookManagement";
+import { AnalysisComponents } from "./AnalysisComponents";
 import {
   Provider,
   teamsTheme,
   Menu,
   MenuItemProps,
   Button,
+  Flex,
+  Box,
 } from "@fluentui/react-northstar";
 import { LoadingPage } from "./Utils/LoadingPage";
 import { SaveMindMap } from "./Utils/SaveMindMap";
-import { AddNoteButton, EditNoteButton } from "./NoteComponents";
 import { EbookBlobManagement } from "./EbookManagementComponents/EbookBlobManagement";
 import { OpenMindMap } from "./Utils/OpenMindMap";
-import { Interface } from "./MindMapComponents";
+import { CommandManager, Interface } from "./MindMapComponents";
+import { IEbooksContent } from "./Global/interface";
+import { Graph } from "./MindMapComponents/common/interfaces";
 
 export const MainMenu: React.FunctionComponent = () => {
-  const [MenuIndex, setMenuIndex] = React.useState(0);
+  // const [MenuIndex, setMenuIndex] = React.useState(0);
   const [ebookBlobList, setEbookBlobList] = React.useState<EbookBlobManagement>(
     new EbookBlobManagement()
   );
-  const [selectedEbookListIndex, setSelectedEbookListIndex] =
-    React.useState(-1);
-  const [graph, setGraph] = React.useState<Interface.MindData>(null);
+  // const [ebookSelected, setEbookSelected] = React.useState<IEbooksContent>({
+  //   EbookId: -1,
+  //   title: "",
+  //   fileHash: "",
+  // } as IEbooksContent);
+  // const [ebookSelected, setEbookSelected] = React.useState<number>(-1);
+  const [graph, setGraph] = React.useState<Interface.MindData>();
   const [note, setNote] = React.useState("");
 
-  function changePage(ev: React.SyntheticEvent, props: MenuItemProps): void {
+  const [graphClass, setGraphClass] = React.useState<Graph>();
+  const [executeCommand, setExecuteCommand] =
+    React.useState<(name: string, params?: object) => void>();
+  const [commandManager, setCommandManager] = React.useState<CommandManager>();
+  const [changePage, setChangePage] = React.useState<React.ReactNode>(
+    <MainMindMap
+      graphData={graph}
+      setGraphData={setGraph}
+      graphClass={graphClass}
+      setGraphClass={setGraphClass}
+      commandManager={commandManager}
+      setCommandManager={setCommandManager}
+      executeCommand={executeCommand}
+      setExecuteCommand={setExecuteCommand}
+    />
+  );
+  function changePageFunction(
+    ev: React.SyntheticEvent,
+    props: MenuItemProps
+  ): void {
     // eslint-disable-next-line react/prop-types
     console.log(props.index);
     // eslint-disable-next-line react/prop-types
-    setMenuIndex(props.index);
-  }
-  return (
-    <Provider theme={teamsTheme}>
-      <Menu
-        defaultActiveIndex={0}
-        items={[
-          {
-            key: "MindMapCanvas",
-            content: "Mind Map Canvas",
-            onClick: changePage,
-          },
-          {
-            key: "Ebook",
-            content: "Ebook",
-            onClick: changePage,
-          },
-          {
-            key: "Resources",
-            content: "Resources",
-            onClick: changePage,
-          },
-          {
-            key: "Resources2",
-            content: "Resources2",
-            onClick: changePage,
-          },
-        ]}
-        primary
-      />
-      {MenuIndex === 0 && <MainMindMap graph={graph} setGraph={setGraph} />}
-      {MenuIndex === 1 && (
+    // setMenuIndex(props.index);
+    // eslint-disable-next-line react/prop-types
+    const MenuIndex = props.index;
+    if (MenuIndex === 0) {
+      setChangePage(
+        <MainMindMap
+          graphData={graph}
+          setGraphData={setGraph}
+          graphClass={graphClass}
+          setGraphClass={setGraphClass}
+          commandManager={commandManager}
+          setCommandManager={setCommandManager}
+          executeCommand={executeCommand}
+        />
+      );
+    } else if (MenuIndex === 1) {
+      setChangePage(
         <EbookManagement
-          selectedEbookListIndex={selectedEbookListIndex}
-          setSelectedEbookListIndex={setSelectedEbookListIndex}
+          // ebookSelected={ebookSelected}
+          // setEbookSelected={setEbookSelected}
           ebookBlobClassObject={ebookBlobList}
           setEbookBlobClassObject={setEbookBlobList}
+          graphClass={graphClass}
+          setGraphClass={setGraphClass}
+          executeCommand={executeCommand}
+          commandManager={commandManager}
         />
-      )}
-      {/* {MenuIndex === 0 && <LoadingPage />}
-      {MenuIndex === 1 && <LoadingPage />} */}
-      {MenuIndex === 2 && <LoadingPage />}
-      {MenuIndex === 3 && (
+      );
+    } else if (MenuIndex === 2) {
+      setChangePage(
+        <AnalysisComponents
+          ebookBlobClassObject={ebookBlobList}
+          setEbookBlobClassObject={setEbookBlobList}
+          graphClass={graphClass}
+          setGraphClass={setGraphClass}
+          executeCommand={executeCommand}
+          commandManager={commandManager}
+        />
+      );
+    } else if (MenuIndex === 3) {
+      setChangePage(
         <>
           <OpenMindMap
             setGraph={setGraph}
@@ -80,7 +105,44 @@ export const MainMenu: React.FunctionComponent = () => {
           />
           <SaveMindMap ebookBlobList={ebookBlobList} graph={graph} />
         </>
-      )}
+      );
+    }
+  }
+  return (
+    <Provider theme={teamsTheme} style={{ height: "100vh" }}>
+      <Flex column fill style={{ height: "100vh" }}>
+        <Flex.Item styles={{ top: 0, position: "sticky", "z-index": 9 }}>
+          <Menu
+            defaultActiveIndex={0}
+            items={[
+              {
+                key: "MindMapCanvas",
+                content: "Mind Map Canvas",
+                onClick: changePageFunction,
+              },
+              {
+                key: "Ebook",
+                content: "Ebook",
+                onClick: changePageFunction,
+              },
+              {
+                key: "Analysis Used of Reference",
+                content: "Analysis Used of Reference",
+                onClick: changePageFunction,
+              },
+              {
+                key: "Resources",
+                content: "Resources",
+                onClick: changePageFunction,
+              },
+            ]}
+            primary
+          />
+        </Flex.Item>
+        <Flex.Item styles={{ flex: 1, height: "100%", overflow: "hidden" }}>
+          <Box content={changePage} />
+        </Flex.Item>
+      </Flex>
     </Provider>
   );
 };

@@ -34,6 +34,8 @@ import BehaviorManager from "./common/behaviorManager";
 
 import { setAnchorPointsState } from "./shape/common/anchor";
 
+import { NodePath } from "./ComponentParts/NodePath";
+
 // import {
 //   NodePanel,
 //   EdgePanel,
@@ -66,6 +68,7 @@ export {
   CommandManager,
   BehaviorManager,
   setAnchorPointsState,
+  NodePath,
   // NodePanel,
   // EdgePanel,
   // MultiPanel,

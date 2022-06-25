@@ -1,14 +1,16 @@
-import React from "react";
-import { Alert, ProviderProps } from "@fluentui/react-northstar";
+import React, { useEffect } from "react";
+import { Alert, List, ProviderProps } from "@fluentui/react-northstar";
 import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "./TextLayer.css";
-import { EbookViewerRequiredProps, globalData } from "../Global/interface";
+import { EbookViewerRequiredProps, ebookSelected } from "../Global/interface";
 
 interface EbookViewerProps
   extends ProviderProps,
     EbookViewerRequiredProps,
-    globalData {}
+    ebookSelected {
+  style?: React.CSSProperties;
+}
 
 export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
   props
@@ -20,8 +22,11 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
     const numPages = pdf.numPages;
     setNumPages(numPages);
   }
+  useEffect(() => {
+    console.log("EbookViewer", props.ebookSelected);
+  }, [props.ebookSelected]);
 
-  if (props.selectedEbookListIndex > -1)
+  if (props.ebookSelected && props.ebookSelected.EbookId > -1)
     return (
       <Document
         className="DocumentRendered"
@@ -38,5 +43,5 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
         ))}
       </Document>
     );
-  else return <Alert info content="No ebook selected" />;
+  else return <Alert info content="No ebook selected" style={props.style} />;
 };

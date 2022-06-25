@@ -1,19 +1,19 @@
-import { IEbooksContent } from "../../Database";
 import React from "react";
 
-interface EbookBlobManagementInterface extends IEbooksContent {
+export interface EbookBlobInterface {
+  EbookId: number;
   ebookBlob: string;
 }
 
 export class EbookBlobManagement {
-  ebookBlobList: EbookBlobManagementInterface[] = [];
+  ebookBlobList: EbookBlobInterface[] = [];
 
   constructor(ebookList?: EbookBlobManagement) {
     if (ebookList) {
-      this.ebookBlobList = ebookList.export();
+      this.ebookBlobList = ebookList.exportEbookBlobList();
     }
   }
-  addBook(ebook: EbookBlobManagementInterface) {
+  addBook(ebook: EbookBlobInterface) {
     this.ebookBlobList.push(ebook);
   }
 
@@ -23,28 +23,15 @@ export class EbookBlobManagement {
     );
   }
 
-  updateBook(ebook: EbookBlobManagementInterface) {
-    this.ebookBlobList = this.ebookBlobList.map((book) => {
-      if (book.fileHash === ebook.fileHash) {
-        return ebook;
-      }
-      return book;
-    });
-  }
-
-  export() {
+  exportEbookBlobList() {
     return this.ebookBlobList;
-  }
-
-  exportToJson() {
-    return JSON.stringify(this.export());
   }
 
   importFromJson(json: string) {
     this.ebookBlobList = JSON.parse(json);
   }
 
-  importFromArray(array: EbookBlobManagementInterface[]) {
+  importFromArray(array: EbookBlobInterface[]) {
     this.ebookBlobList = array;
   }
 

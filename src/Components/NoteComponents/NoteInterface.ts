@@ -7,5 +7,5 @@ export interface INoteEditable {
 }
 
 export interface INode2NoteEditable {
-  MindMapNodeId: number;
+  MindMapNodeId?: number;
 }

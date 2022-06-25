@@ -3,24 +3,54 @@ import { ADbFunctions } from "./BaseDb";
 
 export class NodeFunctions extends ADbFunctions {
   async getNode2Note(MindMapNodeId: number) {
-    return NodeFunctions.db.node2NoteTable.get(MindMapNodeId);
+    return NodeFunctions.db.transaction(
+      "r",
+      NodeFunctions.db.node2NoteTable,
+      () => {
+        return NodeFunctions.db.node2NoteTable.get(MindMapNodeId);
+      }
+    );
   }
 
   async getNode2NotesArray() {
-    return NodeFunctions.db.node2NoteTable.toArray();
+    return NodeFunctions.db.transaction(
+      "r",
+      NodeFunctions.db.node2NoteTable,
+      () => {
+        return NodeFunctions.db.node2NoteTable.toArray();
+      }
+    );
   }
 
   async updateNode2Note(MindMapNodeId: number, node2Note: INode2Note) {
-    return NodeFunctions.db.node2NoteTable.update(MindMapNodeId, node2Note);
+    return NodeFunctions.db.transaction(
+      "rw",
+      NodeFunctions.db.node2NoteTable,
+      () => {
+        return NodeFunctions.db.node2NoteTable.update(MindMapNodeId, node2Note);
+      }
+    );
   }
   async _addNode2Note(node2Note: INode2Note) {
-    return NodeFunctions.db.node2NoteTable.add(
-      node2Note,
-      node2Note.MindMapNodeId
+    return NodeFunctions.db.transaction(
+      "rw",
+      NodeFunctions.db.node2NoteTable,
+      () => {
+        return NodeFunctions.db.node2NoteTable.add(
+          node2Note,
+          node2Note.MindMapNodeId
+        );
+      }
     );
   }
   async deleteNode2Note(MindMapNodeId: number) {
-    return NodeFunctions.db.node2NoteTable.delete(MindMapNodeId);
+    return NodeFunctions.db.transaction(
+      "rw",
+      NodeFunctions.db.node2NoteTable,
+      () => {
+        return NodeFunctions.db.node2NoteTable.delete(MindMapNodeId);
+      }
+    );
   }
 
   async addNewNoteToNode2Note(MindMapNodeId: number, noteId: number) {
@@ -34,6 +64,43 @@ export class NodeFunctions extends ADbFunctions {
         NoteList: [noteId],
       };
       await this._addNode2Note(newNode2Note);
+    }
+  }
+
+  async getNodeIdByNoteId(noteId: number) {
+    const node2Notes = await this.getNode2NotesArray();
+    const nodeIds = node2Notes.filter((node2Note) =>
+      node2Note.NoteList.includes(noteId)
+    );
+    if (nodeIds.length > 0) {
+      return nodeIds.map((node2Note) => node2Note.MindMapNodeId)[0];
+    } else return null;
+  }
+
+  async deleteNoteIdFromNode2Note(MindMapNodeId: number, noteId: number) {
+    return NodeFunctions.db.transaction(
+      "rw",
+      NodeFunctions.db.node2NoteTable,
+      () => {
+        return NodeFunctions.db.node2NoteTable
+          .get(MindMapNodeId)
+          .then((node) => {
+            if (node.NoteList.includes(noteId)) {
+              return NodeFunctions.db.node2NoteTable.update(node, {
+                NoteList: node.NoteList.filter((id) => id !== noteId),
+              });
+            }
+            return Promise.reject("NoteId not found");
+          });
+      }
+    );
+  }
+
+  async updateNoteToNode2Note(MindMapNodeId: number, noteId: number) {
+    const oldMindMapNodeId = await this.getNodeIdByNoteId(noteId);
+    if (MindMapNodeId !== oldMindMapNodeId) {
+      this.deleteNoteIdFromNode2Note(oldMindMapNodeId, noteId);
+      return this.addNewNoteToNode2Note(MindMapNodeId, noteId);
     }
   }
 }

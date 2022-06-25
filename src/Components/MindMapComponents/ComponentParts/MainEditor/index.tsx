@@ -23,6 +23,12 @@ interface EditorProps {
   [EditorEvent.onAfterExecuteCommand]?: (e: CommandEvent) => void;
   children?: React.ReactNode;
   setGraph?: (graph: MindData) => void;
+  graphClass?: Graph;
+  setGraphClass?: (graph: Graph) => void;
+  setCommandManager?: (commandManager: CommandManager) => void;
+  setExecuteCommand?: (
+    executeCommand: (name: string, params?: object) => void
+  ) => void;
 }
 
 interface EditorState extends EditorContextProps, EditorPrivateContextProps {}
@@ -43,7 +49,7 @@ class MainEditor extends React.Component<EditorProps, EditorState> {
     super(props);
 
     this.state = {
-      graph: null,
+      graph: props.graphClass ? props.graphClass : null,
       setGraph: this.setGraph,
       executeCommand: this.executeCommand,
       commandManager: new CommandManager(),
@@ -156,6 +162,15 @@ class MainEditor extends React.Component<EditorProps, EditorState> {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-expect-error
       this.props.setGraph(graph.save());
+    }
+    if (this.props.setGraphClass) {
+      this.props.setGraphClass(graph);
+    }
+    if (this.props.setCommandManager) {
+      this.props.setCommandManager(this.state.commandManager);
+    }
+    if (this.props.setExecuteCommand) {
+      this.props.setExecuteCommand(this.state.executeCommand);
     }
 
     this.bindEvent(graph);

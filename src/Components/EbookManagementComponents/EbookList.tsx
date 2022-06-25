@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Box,
+  Card,
   List,
   ShorthandCollection,
   ListItemProps,
@@ -20,14 +20,15 @@ import { toString } from "lodash";
 import {
   EbookBlobManagementEditableProps,
   EbookViewerSettingProps,
-  globalData,
+  ebookSelected,
 } from "../Global/interface";
+import copyCommand from "../MindMapComponents/ComponentParts/Graph/command/copy";
 
 interface EbookListProps
   extends ProviderProps,
     EbookBlobManagementEditableProps,
     EbookViewerSettingProps,
-    globalData {
+    ebookSelected {
   className?: string;
 }
 
@@ -40,12 +41,12 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
     return dbClass.getEbookCounts();
   });
 
-  const ebookBlobArray = useLiveQuery(async () => {
+  const ebookListArray = useLiveQuery(async () => {
     return await dbClass.getEbooksArray();
   });
 
-  const ebookListItemView: ShorthandCollection<ListItemProps> = ebookBlobArray
-    ? ebookBlobArray.map((item) => ({
+  const ebookListItemView: ShorthandCollection<ListItemProps> = ebookListArray
+    ? ebookListArray.map((item) => ({
         key: toString(item.EbookId),
         content: (
           <Flex gap="gap.small" vAlign="center">
@@ -57,44 +58,54 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
         ),
       }))
     : [];
+  let index = -1;
 
-  function setEbookBlob(selectedIndex: number) {
-    const ebookId = ebookBlobArray[selectedIndex].EbookId;
-    props.setFileBlob(props.ebookBlobClassObject.getEbookBlobById(ebookId));
-    props.setSelectedEbookListIndex(selectedIndex);
+  if (ebookListArray) {
+    index = ebookListArray.findIndex(
+      (item, index) => item.EbookId === props.ebookSelected.EbookId
+    );
+  }
+
+  async function setEbookBlob(selectedIndex: number) {
+    props.setEbookSelected(ebookListArray[selectedIndex]);
+    props.setFileBlob(
+      props.ebookBlobClassObject.getEbookBlobById(
+        ebookListArray[selectedIndex].EbookId
+      )
+    );
+    index = selectedIndex;
+    console.log("EbookList id", ebookListArray[selectedIndex]);
   }
 
   return (
-    <Box
-      styles={({ theme: { siteVariables } }) => ({
-        backgroundColor: siteVariables.colorScheme.default.background4,
-      })}
-      className={props.className}
-    >
-      <Layout
-        vertical
-        start={<AddEbook {...props} />}
-        main={
-          <List
-            selectable
-            style={{
-              overflowX: "auto",
-              overflowY: "auto",
-            }}
-            selectedIndex={props.selectedEbookListIndex}
-            onSelectedIndexChange={(
-              e: React.SyntheticEvent<HTMLElement>,
-              changeObject: { selectedIndex: number }
-            ) => {
-              if (changeObject.selectedIndex >= 0) {
-                setEbookBlob(changeObject.selectedIndex);
-              }
-            }}
-            items={ebookListItemView}
-          />
-        }
-        end={<Text content={`Total Ebooks: ${ebookSize}`} />}
-      />
-    </Box>
+    <Card className={props.className}>
+      <Flex column fill className={props.className}>
+        <Flex.Item>{<AddEbook {...props} />}</Flex.Item>
+        <Flex.Item>
+          {
+            <List
+              selectable
+              style={{
+                overflowX: "auto",
+                overflowY: "auto",
+              }}
+              selectedIndex={index}
+              onSelectedIndexChange={(
+                e: React.SyntheticEvent<HTMLElement>,
+                changeObject: { selectedIndex: number }
+              ) => {
+                if (changeObject.selectedIndex >= 0) {
+                  setEbookBlob(changeObject.selectedIndex);
+                }
+              }}
+              items={ebookListItemView}
+            />
+          }
+        </Flex.Item>
+        <Flex.Item push>
+          <Text content={`Total Ebooks: ${ebookSize}`} />
+        </Flex.Item>
+      </Flex>
+    </Card>
   );
 };

@@ -1,3 +1,3 @@
-import { dbClass } from "../../Database";
+import { dbClass, useLiveQuery } from "../../Database";
 
-export { dbClass };
+export { dbClass, useLiveQuery };

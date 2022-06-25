@@ -12,7 +12,7 @@ export const SaveMindMap: React.FC<SaveMindMapProps> = (props) => {
   async function saveMindMap() {
     const filePath = await window.api.files.saveMindMapFileDialog();
     const Graph: Interface.MindData = props.graph;
-    const EbookList = props.ebookBlobList.export();
+    const EbookList = props.ebookBlobList.exportEbookBlobList();
     const EbookTable = await dbClass.getEbooksArray();
     const Node2NoteTable = await dbClass.getNode2NotesArray();
     const NoteTable = await dbClass.getNotesArray();

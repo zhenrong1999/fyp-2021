@@ -1,10 +1,10 @@
 import React from "react";
-import { Button } from "@fluentui/react-northstar";
+import { Button, Loader } from "@fluentui/react-northstar";
 import { dbClass, db } from "../../Database/index";
 import { SHA256 } from "crypto-js";
 import {
+  EbookBlobInterface,
   EbookBlobManagementEditableProps,
-  EbookViewerSettingProps,
 } from "../Global/interface";
 
 export interface AddEbookProps extends EbookBlobManagementEditableProps {
@@ -12,7 +12,9 @@ export interface AddEbookProps extends EbookBlobManagementEditableProps {
 }
 
 export const AddEbook: React.FunctionComponent<AddEbookProps> = (props) => {
+  const [loading, setLoading] = React.useState(false);
   async function openFile() {
+    setLoading(true);
     // When the button is clicked, open the native file picker to select a PDF.
     const item = await window.api.files.openEbookFileDialog();
     if (item && item.filePath) {
@@ -29,17 +31,23 @@ export const AddEbook: React.FunctionComponent<AddEbookProps> = (props) => {
         );
       } else {
         booksCounts = await dbClass.addNewEbook(fileName, fileHashed);
-        alert(`Ebook added successfully. ${fileName} has been added.`);
         props.ebookBlobClassObject.addBook({
           EbookId: booksCounts,
-          title: fileName,
-          fileHash: fileHashed,
           ebookBlob: item.blob,
-          NoteList: [],
-        });
+        } as EbookBlobInterface);
         props.setEbookBlobClassObject(props.ebookBlobClassObject);
+        alert(`Ebook added successfully. ${fileName} has been added.`);
       }
     }
+    setLoading(false);
   }
-  return <Button content="Add Ebook" onClick={openFile} />;
+  return (
+    <>
+      {!loading ? (
+        <Button content="Add Ebook" onClick={openFile} />
+      ) : (
+        <Loader label="Adding Ebook" size="smallest" labelPosition="end" />
+      )}
+    </>
+  );
 };

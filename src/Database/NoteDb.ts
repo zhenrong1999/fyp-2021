@@ -4,7 +4,13 @@ import { EbookFunctions } from "./EbookDb";
 
 export class NoteFunctions extends ADbFunctions {
   async getNote(noteId: number) {
-    return NoteFunctions.db.notesTable.get(noteId);
+    return NoteFunctions.db.transaction(
+      "r",
+      NoteFunctions.db.notesTable,
+      async () => {
+        return NoteFunctions.db.notesTable.get(noteId);
+      }
+    );
   }
 
   async updateNote(noteId: number, noteUpdated: INoteContent) {
@@ -32,11 +38,19 @@ export class NoteFunctions extends ADbFunctions {
       "rw",
       NoteFunctions.db.node2NoteTable,
       NoteFunctions.db.notesTable,
+      NoteFunctions.db.ebooksTable,
       () => {
         NoteFunctions.db.node2NoteTable.each((node) => {
           if (node.NoteList.includes(noteId)) {
             NoteFunctions.db.node2NoteTable.update(node, {
               NoteList: node.NoteList.filter((id) => id !== noteId),
+            });
+          }
+        });
+        NoteFunctions.db.ebooksTable.each((ebook) => {
+          if (ebook.NoteList.includes(noteId)) {
+            NoteFunctions.db.ebooksTable.update(ebook, {
+              NoteList: ebook.NoteList.filter((id) => id !== noteId),
             });
           }
         });
@@ -64,7 +78,13 @@ export class NoteFunctions extends ADbFunctions {
       NoteContent: noteContentInput,
       EbookId: ebookId ? ebookId : undefined,
     };
-    return await NoteFunctions.db.notesTable.add(newNote);
+
+    return await this.addNote(newNote).then((note) => {
+      if (ebookId) {
+        dbClass.linkEbookToNote(ebookId, note);
+      }
+      return note;
+    });
   }
 
   async updateNoteContentAndEbookId(
@@ -81,6 +101,6 @@ export class NoteFunctions extends ADbFunctions {
         dbClass.linkEbookToNote(newNote.EbookId, noteId);
       }
     });
-    return await NoteFunctions.db.notesTable.update(noteId, newNote);
+    return await this.updateNote(noteId, newNote);
   }
 }

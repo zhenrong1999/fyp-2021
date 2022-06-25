@@ -1,12 +1,19 @@
-import G6 from '@antv/g6';
-import { ItemType, ItemState, GraphState, EditorEvent } from './constants';
-import { Graph, MindData, TreeGraph, EdgeModel, Item, Node, Edge } from './interfaces';
-
+import G6 from "@antv/g6";
+import { ItemType, ItemState, GraphState, EditorEvent } from "./constants";
+import {
+  Graph,
+  MindData,
+  TreeGraph,
+  EdgeModel,
+  Item,
+  Node,
+  Edge,
+} from "./interfaces";
 
 export function guid() {
-  return 'xxxxxxxx'.replace(/[xy]/g, function(c) {
+  return "xxxxxxxx".replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
@@ -14,14 +21,14 @@ export function guid() {
 /** 拼接查询字符 */
 export const toQueryString = (obj: object) =>
   Object.keys(obj)
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
-    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
-    .join('&');
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(obj[key])}`)
+    .join("&");
 
 /** 执行批量处理 */
 export function executeBatch(graph: Graph, execute: () => void) {
-  const autoPaint = graph.get('autoPaint');
+  const autoPaint = graph.get("autoPaint");
 
   graph.setAutoPaint(false);
 
@@ -31,7 +38,10 @@ export function executeBatch(graph: Graph, execute: () => void) {
   graph.setAutoPaint(autoPaint);
 }
 
-export function recursiveTraversal(root:MindData,  callback: (node:MindData) => void) {
+export function recursiveTraversal(
+  root: MindData,
+  callback: (node: MindData) => void
+) {
   if (!root) {
     return;
   }
@@ -42,7 +52,7 @@ export function recursiveTraversal(root:MindData,  callback: (node:MindData) => 
     return;
   }
 
-  root.children.forEach(item => recursiveTraversal(item, callback));
+  root.children.forEach((item) => recursiveTraversal(item, callback));
 }
 
 /** 判断是否流程图 */
@@ -108,11 +118,11 @@ export function setSelectedItems(graph: Graph, items: Item[] | string[]) {
     const selectedNodes = getSelectedNodes(graph);
     const selectedEdges = getSelectedEdges(graph);
 
-    [...selectedNodes, ...selectedEdges].forEach(node => {
+    [...selectedNodes, ...selectedEdges].forEach((node) => {
       graph.setItemState(node, ItemState.Selected, false);
     });
 
-    items.forEach(item => {
+    items.forEach((item) => {
       graph.setItemState(item, ItemState.Selected, true);
     });
   });
@@ -123,12 +133,15 @@ export function setSelectedItems(graph: Graph, items: Item[] | string[]) {
 }
 
 /** 清除选中状态 */
-export function clearSelectedState(graph: Graph, shouldUpdate: (item: Item) => boolean = () => true) {
+export function clearSelectedState(
+  graph: Graph,
+  shouldUpdate: (item: Item) => boolean = () => true
+) {
   const selectedNodes = getSelectedNodes(graph);
   const selectedEdges = getSelectedEdges(graph);
 
   executeBatch(graph, () => {
-    [...selectedNodes, ...selectedEdges].forEach(item => {
+    [...selectedNodes, ...selectedEdges].forEach((item) => {
       if (shouldUpdate(item)) {
         graph.setItemState(item, ItemState.Selected, false);
       }
@@ -136,21 +149,54 @@ export function clearSelectedState(graph: Graph, shouldUpdate: (item: Item) => b
   });
 }
 
+export function setHighLightState(graph: Graph, NodeId: string) {
+  const node: Node = graph
+    .getNodes()
+    .find((item: Node) => item.getModel().id === NodeId);
+  const highlightedEdges = getMindRecallEdges(graph as TreeGraph, node as Node);
+  clearHighLightState(graph);
 
-export function getFlowRecallEdges(graph: Graph, node: Node, targetIds: string[] = [], edges: Edge[] = []) {
+  executeBatch(graph, () => {
+    highlightedEdges.forEach((item) => {
+      graph.setItemState(item, ItemState.HighLight, true);
+    });
+  });
+}
+
+export function clearHighLightState(graph: Graph) {
+  executeBatch(graph, () => {
+    const highlightedEdges = graph.getEdges();
+
+    highlightedEdges.forEach((edge: Edge) => {
+      const id = edge.getID();
+      const item = graph.findById(id);
+
+      if (item && !item.destroyed) {
+        graph.setItemState(item, ItemState.HighLight, false);
+      }
+    });
+  });
+}
+
+export function getFlowRecallEdges(
+  graph: Graph,
+  node: Node,
+  targetIds: string[] = [],
+  edges: Edge[] = []
+) {
   const inEdges: Edge[] = node.getInEdges();
 
   if (!inEdges.length) {
     return [];
   }
 
-  inEdges.map(edge => {
+  inEdges.map((edge) => {
     const sourceId = (edge.getModel() as EdgeModel).source;
     const sourceNode = graph.findById(sourceId) as Node;
 
     edges.push(edge);
 
-    const targetId = node.get('id');
+    const targetId = node.get("id");
 
     targetIds.push(targetId);
 
@@ -162,20 +208,23 @@ export function getFlowRecallEdges(graph: Graph, node: Node, targetIds: string[]
   return edges;
 }
 
-
-export function getMindRecallEdges(graph: TreeGraph, node: Node,edges: Edge[] = []): any {
-  const parentNode = node.get('parent');
+export function getMindRecallEdges(
+  graph: TreeGraph,
+  node: Node,
+  edges: Edge[] = []
+): Edge[] {
+  const parentNode = node.get("parent");
 
   if (!parentNode) {
     return edges;
   }
 
-  node.getEdges().forEach(edge => {
+  node.getEdges().forEach((edge) => {
     // const source = edge.getModel().source as Edge;
     const sourceId = (edge.getModel() as EdgeModel).source;
     const sourceNode = graph.findById(sourceId) as Node;
 
-    if (sourceNode.get('id') === parentNode.get('id')) {
+    if (sourceNode.get("id") === parentNode.get("id")) {
       edges.push(edge);
     }
   });
@@ -183,10 +232,12 @@ export function getMindRecallEdges(graph: TreeGraph, node: Node,edges: Edge[] = 
   return getMindRecallEdges(graph, parentNode, edges);
 }
 
-
 export function getVariableName<TResult>(name: () => TResult) {
-    const varExtractor = new RegExp("return (.*);");
-    const  m = varExtractor.exec(name + "");
-    if (m == null) throw new Error("The function does not contain a statement matching 'return variableName;'");
-    return m[1];
+  const varExtractor = new RegExp("return (.*);");
+  const m = varExtractor.exec(name + "");
+  if (m == null)
+    throw new Error(
+      "The function does not contain a statement matching 'return variableName;'"
+    );
+  return m[1];
 }

@@ -4,6 +4,7 @@ import { NoteFunctions } from "./NoteDb";
 import { NodeFunctions } from "./Node2NoteDb";
 import { EbookFunctions } from "./EbookDb";
 import { applyMixins } from "./Utils/Mixim";
+import { useLiveQuery } from "dexie-react-hooks";
 
 class MindFlowDb extends ADbFunctions {
   public static MindFlowDb() {
@@ -20,7 +21,7 @@ applyMixins(MindFlowDb, [NoteFunctions, NodeFunctions, EbookFunctions]);
 export { IEbooksContent, INode2Note, INoteContent };
 
 export const dbClass = new MindFlowDb();
-
+export { useLiveQuery };
 export const db = () => {
   return MindFlowDb.db;
 };

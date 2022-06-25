@@ -39,7 +39,13 @@ export class EbookFunctions extends ADbFunctions {
   }
 
   async getEbook(id: number) {
-    return EbookFunctions.db.ebooksTable.get(id);
+    return EbookFunctions.db.transaction(
+      "r",
+      EbookFunctions.db.ebooksTable,
+      async () => {
+        return EbookFunctions.db.ebooksTable.get(id);
+      }
+    );
   }
 
   async addNewEbook(title: string, fileHash: string) {
@@ -51,11 +57,23 @@ export class EbookFunctions extends ADbFunctions {
   }
 
   async getEbookCounts() {
-    return EbookFunctions.db.ebooksTable.count();
+    return EbookFunctions.db.transaction(
+      "r",
+      EbookFunctions.db.ebooksTable,
+      async () => {
+        return EbookFunctions.db.ebooksTable.count();
+      }
+    );
   }
 
   async getEbooksArray() {
-    return EbookFunctions.db.ebooksTable.toArray();
+    return EbookFunctions.db.transaction(
+      "r",
+      EbookFunctions.db.ebooksTable,
+      async () => {
+        return EbookFunctions.db.ebooksTable.toArray();
+      }
+    );
   }
 
   async getEbookIndexFromId(id: number) {

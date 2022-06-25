@@ -1,7 +1,12 @@
-import { isMind, isEdge, getGraphState, clearSelectedState } from "../../../common/utils";
-import { ItemState, GraphState, EditorEvent } from '../../../common/constants';
-import { Item, Behavior } from '../../../common/interfaces';
-import BehaviorManager from '../../../common/behaviorManager';
+import {
+  isMind,
+  isEdge,
+  getGraphState,
+  clearSelectedState,
+} from "../../../common/utils";
+import { ItemState, GraphState, EditorEvent } from "../../../common/constants";
+import { Item, Behavior } from "../../../common/interfaces";
+import BehaviorManager from "../../../common/behaviorManager";
 
 interface ClickItemBehavior extends Behavior {
   /** 处理点击事件 */
@@ -23,7 +28,8 @@ interface DefaultConfig {
   keyCode: number;
 }
 
-const clickItemBehavior: ClickItemBehavior & ThisType<ClickItemBehavior & DefaultConfig> = {
+const clickItemBehavior: ClickItemBehavior &
+  ThisType<ClickItemBehavior & DefaultConfig> = {
   getDefaultCfg(): DefaultConfig {
     return {
       multiple: true,
@@ -34,18 +40,19 @@ const clickItemBehavior: ClickItemBehavior & ThisType<ClickItemBehavior & Defaul
 
   getEvents() {
     return {
-      'node:click': 'handleItemClick',
-      'edge:click': 'handleItemClick',
-      'canvas:click': 'handleCanvasClick',
-      keydown: 'handleKeyDown',
-      keyup: 'handleKeyUp',
+      "node:click": "handleItemClick",
+      "edge:click": "handleItemClick",
+      "canvas:click": "handleCanvasClick",
+      keydown: "handleKeyDown",
+      keyup: "handleKeyUp",
     };
   },
 
   handleItemClick({ item }) {
     const { graph } = this;
 
-    if (isMind(graph) && isEdge(item)) {
+    // if (isMind(graph) && isEdge(item)) {
+    if (isEdge(item)) {
       return;
     }
 
@@ -54,7 +61,7 @@ const clickItemBehavior: ClickItemBehavior & ThisType<ClickItemBehavior & Defaul
     if (this.multiple && this.keydown) {
       graph.setItemState(item, ItemState.Selected, !isSelected);
     } else {
-      clearSelectedState(graph, selectedItem => {
+      clearSelectedState(graph, (selectedItem) => {
         return selectedItem !== item;
       });
 
@@ -87,4 +94,4 @@ const clickItemBehavior: ClickItemBehavior & ThisType<ClickItemBehavior & Defaul
   },
 };
 
-BehaviorManager.register('click-item', clickItemBehavior);
+BehaviorManager.register("click-item", clickItemBehavior);

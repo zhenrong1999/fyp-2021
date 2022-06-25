@@ -4,39 +4,82 @@ import {
   Button,
   Dialog,
   Header,
+  Flex,
 } from "@fluentui/react-northstar";
 import { NoteField } from "./NoteField";
 import { dbClass } from "../Global/constant";
-import { INoteContent, IEbooksContent } from "../Global/interface";
+import {
+  INoteContent,
+  IEbooksContent,
+  MindMapEditorContextProps,
+} from "../Global/interface";
 import { INode2NoteEditable } from "./NoteInterface";
 
-interface AddNoteButtonProps extends ProviderProps, INode2NoteEditable {}
+interface AddNoteButtonProps
+  extends ProviderProps,
+    INode2NoteEditable,
+    MindMapEditorContextProps {
+  EbookId?: number;
+  setEditing?: (editting: boolean) => void;
+  disableNodeLabelRename?: boolean;
+}
 
 export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
   props
 ) => {
-  const [onChangeNote, setOnChangeNote] = React.useState<INoteContent>({
-    NoteContent: "",
-    EbookId: undefined,
-  } as INoteContent);
   const [onChangeNoteContent, setOnChangeNoteContent] =
     React.useState<string>("");
   const [onChangeEbook, setOnChangeEbook] = React.useState<IEbooksContent>({
     EbookId: undefined,
     title: "",
   } as IEbooksContent);
+  const [onChangeMindMapNodeId, setOnChangeMindMapNodeId] =
+    React.useState<number>(-1);
+  const [nodeLabel, setNodeLabel] = React.useState("");
+  React.useEffect(() => {
+    if (props.EbookId) {
+      dbClass.getEbook(props.EbookId).then((ebook) => {
+        setOnChangeEbook(ebook);
+      });
+    }
+  }, [props.EbookId]);
+
+  React.useEffect(() => {
+    if (props.MindMapNodeId) {
+      setOnChangeMindMapNodeId(props.MindMapNodeId);
+    } else {
+      if (props.graphClass)
+        setOnChangeMindMapNodeId(
+          Number(props.graphClass.getNodes()[0].getModel().id)
+        );
+    }
+    console.log("props.MindMapNodeId in add note button", props.MindMapNodeId);
+  }, [props.MindMapNodeId, props.graphClass]);
+
   return (
     <Dialog
       cancelButton="Cancel"
       confirmButton="Add Note"
       content={
-        <NoteField
-          Ebook={onChangeEbook}
-          NoteContent={onChangeNoteContent}
-          setNoteContent={setOnChangeNoteContent}
-          setOnChangeEbook={setOnChangeEbook}
-        />
+        <Flex fill>
+          <NoteField
+            Ebook={onChangeEbook}
+            NoteContent={onChangeNoteContent}
+            setNoteContent={setOnChangeNoteContent}
+            setOnChangeEbook={setOnChangeEbook}
+            MindMapNodeId={onChangeMindMapNodeId}
+            setOnChangeMindMapNodeId={(onChangeMindMapNodeId) => {
+              setOnChangeMindMapNodeId(onChangeMindMapNodeId);
+            }}
+            nodeLabel={nodeLabel}
+            setNodeLabel={setNodeLabel}
+            {...props}
+          />
+        </Flex>
       }
+      onClick={() => {
+        if (props.setEditing !== undefined) props.setEditing(true);
+      }}
       header="Add Note"
       trigger={<Button content="Add Note" />}
       onConfirm={async () => {
@@ -47,13 +90,22 @@ export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
           })
           .then((noteId) => {
             if (noteId) {
+              console.log(
+                "noteId before add to node2note",
+                onChangeMindMapNodeId
+              );
               dbClass
-                .addNewNoteToNode2Note(props.MindMapNodeId, noteId)
+                .addNewNoteToNode2Note(onChangeMindMapNodeId, noteId)
                 .catch((err) => {
                   alert("Adding Node2Note \n" + err);
                 });
             }
           });
+        if (props.setEditing !== undefined) props.setEditing(false);
+      }}
+      onOpen={() => {
+        setOnChangeNoteContent("");
+        setNodeLabel("");
       }}
     />
   );
