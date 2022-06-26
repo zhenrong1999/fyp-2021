@@ -190,11 +190,16 @@ app.whenReady().then(() => {
     {
       label: "File",
       submenu: [
-        { label: "Open Mind Map" },
+        {
+          label: "Open Mind Map",
+          click: () => {
+            mainwindow2.webContents.send("LoadMindMap");
+          },
+        },
         {
           label: "Save Mind Map",
           click: async () => {
-            // SaveMindMap();
+            mainwindow2.webContents.send("LoadMindMap");
           },
         },
         isMac ? { role: "close" } : { role: "quit" },

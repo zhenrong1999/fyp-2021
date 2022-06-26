@@ -15,9 +15,10 @@ import { LoadingPage } from "./Utils/LoadingPage";
 import { SaveMindMap } from "./Utils/SaveMindMap";
 import { EbookBlobManagement } from "./EbookManagementComponents/EbookBlobManagement";
 import { OpenMindMap } from "./Utils/OpenMindMap";
-import { CommandManager, Interface } from "./MindMapComponents";
-import { IEbooksContent } from "./Global/interface";
+import { CommandManager } from "./MindMapComponents";
+import { IEbooksContent, MindMapInterface } from "./Global/interface";
 import { Graph } from "./MindMapComponents/common/interfaces";
+import { dbClass } from "./Global/constant";
 
 export const MainMenu: React.FunctionComponent = () => {
   // const [MenuIndex, setMenuIndex] = React.useState(0);
@@ -30,7 +31,7 @@ export const MainMenu: React.FunctionComponent = () => {
   //   fileHash: "",
   // } as IEbooksContent);
   // const [ebookSelected, setEbookSelected] = React.useState<number>(-1);
-  const [graph, setGraph] = React.useState<Interface.MindData>();
+  const [graph, setGraph] = React.useState<MindMapInterface.MindData>();
   const [note, setNote] = React.useState("");
 
   const [graphClass, setGraphClass] = React.useState<Graph>();
@@ -49,6 +50,13 @@ export const MainMenu: React.FunctionComponent = () => {
       setExecuteCommand={setExecuteCommand}
     />
   );
+  const [ebookSelected, setEbookSelected] = React.useState<IEbooksContent>({
+    EbookId: -1,
+    title: "",
+    fileHash: "",
+    NoteList: [],
+  });
+
   function changePageFunction(
     ev: React.SyntheticEvent,
     props: MenuItemProps
@@ -82,6 +90,8 @@ export const MainMenu: React.FunctionComponent = () => {
           setGraphClass={setGraphClass}
           executeCommand={executeCommand}
           commandManager={commandManager}
+          ebookSelected={ebookSelected}
+          setEbookSelected={setEbookSelected}
         />
       );
     } else if (MenuIndex === 2) {
@@ -108,6 +118,46 @@ export const MainMenu: React.FunctionComponent = () => {
       );
     }
   }
+  window.api.LoadSave.LoadMindMap(async () => {
+    const savedFileContent = await window.api.files.openMindMapFileDialog();
+    if (savedFileContent) {
+      const json = JSON.parse(savedFileContent);
+      const Graph: MindMapInterface.MindData = json.Graph;
+      setGraph(Graph);
+
+      const EbookList = json.EbookList;
+      ebookBlobList.importFromArray(EbookList);
+      setEbookBlobList(ebookBlobList);
+
+      const EbookTable = json.EbookTable;
+      const Node2NoteTable = json.Node2NoteTable;
+      const NoteTable = json.NoteTable;
+
+      await dbClass.getDbInstance().clear();
+      await dbClass
+        .getDbInstance()
+        .importFromJson(EbookTable, Node2NoteTable, NoteTable);
+      alert("Mind Map loaded successfully!");
+    }
+  });
+
+  window.api.LoadSave.SaveMindMap(async () => {
+    const filePath = await window.api.files.saveMindMapFileDialog();
+    const Graph: MindMapInterface.MindData = graph;
+    const EbookList = ebookBlobList.exportEbookBlobList();
+    const EbookTable = await dbClass.getEbooksArray();
+    const Node2NoteTable = await dbClass.getNode2NotesArray();
+    const NoteTable = await dbClass.getNotesArray();
+    const savedFileContent: string = JSON.stringify({
+      Graph,
+      EbookList,
+      EbookTable,
+      Node2NoteTable,
+      NoteTable,
+    });
+    await window.api.files.writeFile(filePath, savedFileContent);
+  });
+
   return (
     <Provider theme={teamsTheme} style={{ height: "100vh" }}>
       <Flex column fill style={{ height: "100vh" }}>

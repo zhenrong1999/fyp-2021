@@ -19,9 +19,17 @@ const browserWindow = {
     return db;
   },
 };
+const LoadSaveCallingToRenderer = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  LoadMindMap: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => ipcRenderer.on("LoadMindMap", callback),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  SaveMindMap:(callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void)=>ipcRenderer.on("SaveMindMap",callback)
+}
+
 export const API = {
   files: files,
   browserWindow: browserWindow,
+  LoadSave:LoadSaveCallingToRenderer,
 };
 
 contextBridge.exposeInMainWorld("api", API);

@@ -18,22 +18,17 @@ interface EbookManagementProps
     EbookBlobManagementEditableProps,
     MindMapEditorContextProps {
   setGraphClass: (graph: MindMapInterface.Graph) => void;
-  // ebookSelected
+  ebookSelected: IEbooksContent;
+  setEbookSelected: (ebook: IEbooksContent) => void;
 }
 
 export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
   props
 ) => {
-  const [ebookSelected, setEbookSelected] = useState<IEbooksContent>({
-    EbookId: -1,
-    title: "",
-    fileHash: "",
-    NoteList: [],
-  });
   const [fileBlob, setFileBlob] = useState<string>();
   React.useEffect(() => {
-    console.log("Selected Ebook Index is ", ebookSelected);
-  }, [ebookSelected]);
+    console.log("Selected Ebook Index is ", props.ebookSelected);
+  }, [props.ebookSelected]);
   const divStyle = {
     flex: 1,
     overflow: "hidden",
@@ -45,8 +40,8 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
       {/* <Flex.Item className="ebookManagementLeftPanel"> */}
       <EbookList
         className="ebookManagementLeftPanel"
-        ebookSelected={ebookSelected}
-        setEbookSelected={setEbookSelected}
+        ebookSelected={props.ebookSelected}
+        setEbookSelected={props.setEbookSelected}
         setFileBlob={setFileBlob}
         {...props}
       />
@@ -56,8 +51,8 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
 
       <EbookManagementRightPanel
         className="ebookManagementRightPanel"
-        ebookSelected={ebookSelected}
-        setEbookSelected={setEbookSelected}
+        ebookSelected={props.ebookSelected}
+        setEbookSelected={props.setEbookSelected}
         {...props}
       />
 
@@ -65,8 +60,8 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
         className="pdfViewer"
         // style={divStyle}
         fileBlob={fileBlob}
-        ebookSelected={ebookSelected}
-        setEbookSelected={setEbookSelected}
+        ebookSelected={props.ebookSelected}
+        setEbookSelected={props.setEbookSelected}
         {...props}
       />
       {/* <Flex fill style={divStyle}> */}
