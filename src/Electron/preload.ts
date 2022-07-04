@@ -14,6 +14,8 @@ const files = {
 };
 
 const browserWindow = {
+  infoDialog: (messageBoxOptions: Electron.MessageBoxOptions) =>
+    ipcRenderer.invoke("app:infoDialog", messageBoxOptions),
   getSize: () => ipcRenderer.invoke("browserWindow:getSize"),
   getDb: () => {
     return db;
@@ -21,15 +23,19 @@ const browserWindow = {
 };
 const LoadSaveCallingToRenderer = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  LoadMindMap: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => ipcRenderer.on("LoadMindMap", callback),
+  LoadMindMap: (
+    callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void
+  ) => ipcRenderer.on("LoadMindMap", callback),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  SaveMindMap:(callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void)=>ipcRenderer.on("SaveMindMap",callback)
-}
+  SaveMindMap: (
+    callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void
+  ) => ipcRenderer.on("SaveMindMap", callback),
+};
 
 export const API = {
   files: files,
   browserWindow: browserWindow,
-  LoadSave:LoadSaveCallingToRenderer,
+  LoadSave: LoadSaveCallingToRenderer,
 };
 
 contextBridge.exposeInMainWorld("api", API);

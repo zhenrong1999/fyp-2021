@@ -6,6 +6,7 @@ import {
   protocol,
   shell,
   Menu,
+  ipcRenderer,
 } from "electron";
 import * as fs from "fs";
 import path from "path";
@@ -58,11 +59,11 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "mailto", privileges: { standard: true } },
 ]);
 
-let mainwindow2: BrowserWindow = null;
+let mainwindow: BrowserWindow = null;
 
 const createWindow = (): void => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainwindow = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
@@ -71,17 +72,16 @@ const createWindow = (): void => {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
   });
-  mainwindow2 = mainWindow;
 
   // and load the index.html of the app.
-  mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  mainwindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  mainwindow.webContents.openDevTools();
 };
 
 async function getSize() {
-  const windowBounds = mainwindow2.getSize();
+  const windowBounds = mainwindow.getSize();
   return windowBounds;
 }
 
@@ -151,12 +151,20 @@ async function writeFile(filePath: string, data?: string) {
   });
 }
 
+async function infoDialog(messageBoxOptions: Electron.MessageBoxOptions) {
+  const { response } = await dialog.showMessageBox(messageBoxOptions);
+  return response;
+}
+
 app.whenReady().then(() => {
   ipcMain.handle("dialog:openEbookFile", handleEbookFileOpen);
   ipcMain.handle("dialog:openMindMapFile", handleMindMapFileOpen);
   ipcMain.handle("dialog:saveMindMapFile", handleMindMapFileSave);
   ipcMain.handle("browserWindow:getSize", getSize);
   ipcMain.handle("app:getTempPath", getTempPath);
+  ipcMain.handle("app:infoDialog", (_event, messageBoxOptions) =>
+    infoDialog(messageBoxOptions)
+  );
   ipcMain.handle("app:writeFile", (_event, args, args2) => {
     writeFile(args, args2);
   });
@@ -192,14 +200,26 @@ app.whenReady().then(() => {
       submenu: [
         {
           label: "Open Mind Map",
-          click: () => {
-            mainwindow2.webContents.send("LoadMindMap");
+          click: async () => {
+            const savedFileContent = await handleMindMapFileOpen();
+            mainwindow.webContents.send("LoadMindMap", savedFileContent);
           },
         },
         {
           label: "Save Mind Map",
           click: async () => {
-            mainwindow2.webContents.send("LoadMindMap");
+            ipcMain.once(
+              "saveMindMap-reply",
+              (event, filePath, savedFileContent) => {
+                console.log("Saved to ", filePath);
+                console.log("Saved content: ", savedFileContent);
+                writeFile(filePath, savedFileContent);
+              }
+            );
+            const filePath = await handleMindMapFileSave();
+            mainwindow.webContents.send("SaveMindMap", filePath);
+            // writeFile(filePath, savedFileContent);
+            // mainwindow.webContents.send("SaveMindMap");
           },
         },
         isMac ? { role: "close" } : { role: "quit" },

@@ -19,7 +19,11 @@
   ],
   "parser": "@typescript-eslint/parser",
   "ignorePatterns": ["node_modules/*", "webpack*", "__tests__/*"],
-  "rules": { "@typescript-eslint/ban-ts-ignore": "off" },
+  "rules": {
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  },
   "settings": {
     "react": {
       "version": "detect"

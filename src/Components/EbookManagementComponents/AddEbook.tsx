@@ -36,7 +36,10 @@ export const AddEbook: React.FunctionComponent<AddEbookProps> = (props) => {
           ebookBlob: item.blob,
         } as EbookBlobInterface);
         props.setEbookBlobClassObject(props.ebookBlobClassObject);
-        alert(`Ebook added successfully. ${fileName} has been added.`);
+        window.api.browserWindow.infoDialog({
+          message: `Ebook added successfully. ${fileName} has been added.`,
+          type: "info",
+        });
       }
     }
     setLoading(false);

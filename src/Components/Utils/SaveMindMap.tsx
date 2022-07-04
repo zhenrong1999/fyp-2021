@@ -24,6 +24,11 @@ export const SaveMindMap: React.FC<SaveMindMapProps> = (props) => {
       NoteTable,
     });
     await window.api.files.writeFile(filePath, savedFileContent);
+    window.api.browserWindow.infoDialog({
+      message: `Mind Map saved successfully!`,
+      detail: `Mind Map saved to ${filePath}`,
+      type: "info",
+    });
   }
 
   return (

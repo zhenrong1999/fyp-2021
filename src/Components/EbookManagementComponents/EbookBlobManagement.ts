@@ -1,8 +1,13 @@
 import React from "react";
+import { pdfjs } from "react-pdf";
+import { TypedArray, TextItem } from "pdfjs-dist/types/src/display/api";
+pdfjs.GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.js";
+import { Buffer } from "buffer";
 
 export interface EbookBlobInterface {
   EbookId: number;
   ebookBlob: string;
+  text: string[];
 }
 
 export class EbookBlobManagement {
@@ -37,6 +42,38 @@ export class EbookBlobManagement {
 
   getEbookBlobById(id: number) {
     return this.ebookBlobList.find((book) => book.EbookId === id).ebookBlob;
+  }
+
+  searchEbookInit() {
+    const getPageText = async (pdf: pdfjs.PDFDocumentProxy, pageNo: number) => {
+      const page = await pdf.getPage(pageNo);
+      const tokenizedText = await page.getTextContent();
+      const pageText = tokenizedText.items
+        .map((token: TextItem) => token.str)
+        .join("");
+      return pageText;
+    };
+
+    const getPDFText = async (source: TypedArray): Promise<string[]> => {
+      const pdf = await pdfjs.getDocument(source).promise;
+      const maxPages = pdf.numPages;
+      const pageTextPromises = [];
+      for (let pageNo = 1; pageNo <= maxPages; pageNo += 1) {
+        pageTextPromises.push(getPageText(pdf, pageNo));
+      }
+      const pageTexts = await Promise.all(pageTextPromises);
+      return pageTexts;
+    };
+
+    this.ebookBlobList.forEach(async (book) => {
+      book.text = await getPDFText(Buffer.from(book.ebookBlob, "base64"));
+    });
+  }
+  searchAllText(searchText: string) {
+    return this.ebookBlobList.filter((book) => {
+      return book.text.join("\n").match(`/${searchText}/i`) !== undefined;
+    });
+    // return this.ebookBlobList.filter((book) => book.text.includes(searchText));
   }
 }
 

@@ -35,7 +35,10 @@ export const OpenMindMap: React.FC<OpenMindMapProps> = (props) => {
       await dbClass
         .getDbInstance()
         .importFromJson(EbookTable, Node2NoteTable, NoteTable);
-      alert("Mind Map loaded successfully!");
+      window.api.browserWindow.infoDialog({
+        message: `Mind Map loaded successfully!`,
+        type: "info",
+      });
     }
   }
 

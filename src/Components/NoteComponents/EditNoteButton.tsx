@@ -38,7 +38,7 @@ export const EditNoteButton: React.FunctionComponent<EditNoteButtonProps> = (
     title: "",
   } as IEbooksContent);
   const [onChangeMindMapNodeId, setOnChangeMindMapNodeId] =
-    React.useState<number>(-1);
+    React.useState<number>(props.MindMapNodeId);
 
   const [nodeLabel, setNodeLabel] = React.useState("");
 
@@ -66,6 +66,7 @@ export const EditNoteButton: React.FunctionComponent<EditNoteButtonProps> = (
           Ebook={onChangeEbook}
           setNoteContent={setOnChangeNoteContent}
           setOnChangeEbook={setOnChangeEbook}
+          MindMapNodeId={onChangeMindMapNodeId}
           setOnChangeMindMapNodeId={setOnChangeMindMapNodeId}
           nodeLabel={nodeLabel}
           setNodeLabel={setNodeLabel}
@@ -94,7 +95,15 @@ export const EditNoteButton: React.FunctionComponent<EditNoteButtonProps> = (
               setOnChangeEbook(ebook);
             });
           }
-          setNodeLabel("");
+          if (onChangeMindMapNodeId !== undefined) {
+            setNodeLabel(
+              props.graphClass
+                .findById(onChangeMindMapNodeId.toString())
+                .getModel().label as string
+            );
+          } else {
+            setNodeLabel("");
+          }
         });
       }}
     />

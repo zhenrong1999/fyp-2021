@@ -37,7 +37,11 @@ export const NoteField: React.FunctionComponent<NoteFieldProps> = (props) => {
   const [onChangeEbookSelection, setOnChangeEbookSelection] =
     React.useState<string>(props.Ebook ? props.Ebook.title : "");
 
-  const [currentNodeId, setCurrentNodeId] = React.useState<string>();
+  const [currentNodeId, setCurrentNodeId] = React.useState<string>(
+    props.MindMapNodeId !== undefined
+      ? props.MindMapNodeId.toString()
+      : undefined
+  );
 
   const [labelStatus, setLabelStatus] = React.useState({
     state: "success",
@@ -72,7 +76,8 @@ export const NoteField: React.FunctionComponent<NoteFieldProps> = (props) => {
   React.useEffect(() => {
     if (
       currentNodeId !== undefined &&
-      props.MindMapNodeId.toString() !== currentNodeId
+      (props.MindMapNodeId === undefined ||
+        props.MindMapNodeId.toString() !== currentNodeId)
     ) {
       props.setNodeLabel(
         props.graphClass.findById(currentNodeId.toString()).getModel()
@@ -80,19 +85,20 @@ export const NoteField: React.FunctionComponent<NoteFieldProps> = (props) => {
       );
       props.setOnChangeMindMapNodeId(Number(currentNodeId));
     }
-  }, [currentNodeId, props, props.graphClass]);
-  React.useEffect(() => {
-    if (
-      props.MindMapNodeId !== undefined &&
-      props.MindMapNodeId.toString() !== currentNodeId
-    ) {
-      setCurrentNodeId(props.MindMapNodeId.toString());
-      props.setNodeLabel(
-        props.graphClass.findById(props.MindMapNodeId.toString()).getModel()
-          .label as string
-      );
-    }
-  }, [props, props.MindMapNodeId]);
+    console.log("currentNodeId in Note Field", currentNodeId);
+  }, [currentNodeId, props.graphClass]);
+  // React.useEffect(() => {
+  //   if (
+  //     props.MindMapNodeId !== undefined &&
+  //     props.MindMapNodeId.toString() !== currentNodeId
+  //   ) {
+  //     setCurrentNodeId(props.MindMapNodeId.toString());
+  //     props.setNodeLabel(
+  //       props.graphClass.findById(props.MindMapNodeId.toString()).getModel()
+  //         .label as string
+  //     );
+  //   }
+  // }, [props, props.MindMapNodeId]);
 
   return (
     <div className="NoteEditor" data-color-mode="light">

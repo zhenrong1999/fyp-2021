@@ -19,14 +19,18 @@ plugins.push(
     patterns: [
       {
         from: path.join(
-          path.dirname(require.resolve("pdfjs-dist/package.json")),
+          path.dirname(
+            require.resolve("react-pdf/node_modules/pdfjs-dist/package.json")
+          ),
           "cmaps"
         ),
         to: "pdfjs-dist/cmaps/",
       },
       {
         from: path.join(
-          path.dirname(require.resolve("pdfjs-dist/package.json")),
+          path.dirname(
+            require.resolve("react-pdf/node_modules/pdfjs-dist/package.json")
+          ),
           "build"
         ),
         to: "pdfjs-dist/build/",

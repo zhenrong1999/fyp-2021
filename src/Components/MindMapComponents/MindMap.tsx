@@ -101,10 +101,6 @@ export const MainMindMap: React.FunctionComponent<MainMindMapProps> = (
 
   return (
     <Flex style={divStyle} column fill>
-      <Flex.Item>
-        <Header as="h2" content="Mind Map" />
-      </Flex.Item>
-
       <Flex.Item grow push styles={divStyle}>
         <MainEditor
           setGraph={props.setGraphData}

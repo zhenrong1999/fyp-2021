@@ -5,15 +5,12 @@ import {
   ShorthandCollection,
   ListItemProps,
   Text,
-  Layout,
   ProviderProps,
   Flex,
   Header,
-  dialogBehavior,
 } from "@fluentui/react-northstar";
-import { AddEbook, AddEbookProps } from "./AddEbook";
+import { AddEbook } from "./AddEbook";
 import { DeleteEbookButton } from "./DeleteEbook";
-import { setSelectedItems } from "../MindMapComponents/common/utils";
 import { useLiveQuery } from "dexie-react-hooks";
 import { dbClass } from "../Global/constant";
 import { toString } from "lodash";
@@ -22,7 +19,7 @@ import {
   EbookViewerSettingProps,
   ebookSelected,
 } from "../Global/interface";
-import copyCommand from "../MindMapComponents/ComponentParts/Graph/command/copy";
+import { EbookContext } from "../Global/context";
 
 interface EbookListProps
   extends ProviderProps,
@@ -33,10 +30,7 @@ interface EbookListProps
 }
 
 export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
-  const [itemArray, setItemArray] = React.useState<
-    ShorthandCollection<ListItemProps>
-  >([]);
-  // const db = window.api.browserWindow.getDb();
+  // const ebookContextTest = React.useContext(EbookContext);
   const ebookSize = useLiveQuery(async () => {
     return dbClass.getEbookCounts();
   });
@@ -66,8 +60,15 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
     );
   }
 
-  async function setEbookBlob(selectedIndex: number) {
+  if (props.ebookSelected && props.ebookSelected.EbookId > -1) {
+    props.setFileBlob(
+      props.ebookBlobClassObject.getEbookBlobById(props.ebookSelected.EbookId)
+    );
+  }
+
+  function setEbookBlob(selectedIndex: number) {
     props.setEbookSelected(ebookListArray[selectedIndex]);
+    // props.setEbookSelected(ebookListArray[selectedIndex]);
     props.setFileBlob(
       props.ebookBlobClassObject.getEbookBlobById(
         ebookListArray[selectedIndex].EbookId

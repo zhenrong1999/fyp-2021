@@ -7,7 +7,6 @@ import "./EbookManagement.css";
 import {
   IEbooksContent,
   EbookBlobManagementEditableProps,
-  ebookSelected,
   MindMapEditorContextProps,
   MindMapInterface,
 } from "../Global/interface";
@@ -26,6 +25,7 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
   props
 ) => {
   const [fileBlob, setFileBlob] = useState<string>();
+
   React.useEffect(() => {
     console.log("Selected Ebook Index is ", props.ebookSelected);
   }, [props.ebookSelected]);
@@ -35,7 +35,7 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
     height: "100%",
   };
   return (
-    <>
+    <div style={divStyle}>
       {/* <Flex fill style={divStyle}> */}
       {/* <Flex.Item className="ebookManagementLeftPanel"> */}
       <EbookList
@@ -58,7 +58,6 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
 
       <EbookViewer
         className="pdfViewer"
-        // style={divStyle}
         fileBlob={fileBlob}
         ebookSelected={props.ebookSelected}
         setEbookSelected={props.setEbookSelected}
@@ -69,6 +68,6 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
 
       {/* </Flex.Item> */}
       {/* </Flex> */}
-    </>
+    </div>
   );
 };
