@@ -19,13 +19,13 @@ import { NodePath } from "../MindMapComponents";
 interface NoteFieldProps extends ProviderProps, MindMapEditorContextProps {
   className?: string;
   NoteContent: string;
-  MindMapNodeId?: number;
+  MindMapNodeId?: string;
   Ebook?: IEbooksContent;
   disableNodeLabelRename?: boolean;
   nodeLabel?: string;
   setNoteContent: (noteContent: string) => void;
   setOnChangeEbook: (ebookId: IEbooksContent) => void;
-  setOnChangeMindMapNodeId: (onChangeMindMapNodeId: number) => void;
+  setOnChangeMindMapNodeId: (onChangeMindMapNodeId: string) => void;
   setNodeLabel: (nodeLabel: string) => void;
 }
 
@@ -77,13 +77,12 @@ export const NoteField: React.FunctionComponent<NoteFieldProps> = (props) => {
     if (
       currentNodeId !== undefined &&
       (props.MindMapNodeId === undefined ||
-        props.MindMapNodeId.toString() !== currentNodeId)
+        props.MindMapNodeId !== currentNodeId)
     ) {
       props.setNodeLabel(
-        props.graphClass.findById(currentNodeId.toString()).getModel()
-          .label as string
+        props.graphClass.findById(currentNodeId).getModel().label as string
       );
-      props.setOnChangeMindMapNodeId(Number(currentNodeId));
+      props.setOnChangeMindMapNodeId(currentNodeId);
     }
     console.log("currentNodeId in Note Field", currentNodeId);
   }, [currentNodeId, props.graphClass]);
@@ -138,11 +137,11 @@ export const NoteField: React.FunctionComponent<NoteFieldProps> = (props) => {
       />
       <Header as="h3" content="Save to Node:" />
       <NodePath
+        {...props}
         graph={props.graphClass}
         noEmitEvent={true}
         CurrentNodeId={currentNodeId}
         setSelectedNodeId={setCurrentNodeId}
-        {...props}
       />
       <Flex>
         <FormInput

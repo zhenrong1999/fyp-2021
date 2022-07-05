@@ -12,6 +12,16 @@ export class EbookFunctions extends ADbFunctions {
     );
   }
 
+  async updateEbookTitle(id: number, title: string) {
+    return EbookFunctions.db.transaction(
+      "rw",
+      EbookFunctions.db.ebooksTable,
+      async () => {
+        return EbookFunctions.db.ebooksTable.update(id, { title: title });
+      }
+    );
+  }
+
   async deleteEbook(id: number) {
     return EbookFunctions.db.transaction(
       "rw",
@@ -51,6 +61,7 @@ export class EbookFunctions extends ADbFunctions {
   async addNewEbook(title: string, fileHash: string) {
     return this.addEbook({
       title: title,
+      fileName: title,
       fileHash: fileHash,
       NoteList: [],
     } as IEbooksContent);
@@ -110,6 +121,26 @@ export class EbookFunctions extends ADbFunctions {
             await EbookFunctions.db.ebooksTable.get(ebookId)
           ).NoteList.filter((id) => id !== noteId),
         });
+      }
+    );
+  }
+
+  async haveSameEbookContent(fileHash: string) {
+    return EbookFunctions.db.transaction(
+      "r",
+      EbookFunctions.db.ebooksTable,
+      async () => {
+        return EbookFunctions.db.ebooksTable
+          .where("fileHash")
+          .equals(fileHash)
+          .count()
+          .then((count) => {
+            return count > 0;
+          })
+          .catch((err) => {
+            console.error(err);
+            return false;
+          });
       }
     );
   }

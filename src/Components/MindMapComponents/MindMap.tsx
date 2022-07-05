@@ -173,7 +173,7 @@ export const MainMindMap: React.FunctionComponent<MainMindMapProps> = (
                     className="mindmap"
                     style={{
                       width: "75%",
-                      // height: "800px",
+                      height: "100%",
                       outline: "2px solid black",
                       position: "relative",
                       overflow: "hidden",

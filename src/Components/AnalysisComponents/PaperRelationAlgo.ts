@@ -9,7 +9,7 @@ export async function getNodesToEbook() {
       return dbClass
         .getNode2NotesArray()
         .then((nodes) => {
-          const result: { nodeId: number; ebookList: number[] }[] = [];
+          const result: { nodeId: string; ebookList: number[] }[] = [];
 
           nodes.forEach((node) => {
             if (nodes.length > 0 && notes.length > 0)
@@ -52,8 +52,8 @@ export async function getNodesToEbook() {
               console.log("ebookNode", nodeConfig);
               result2.nodes.push(nodeConfig);
               const edgeConfig: EdgeConfig = {
-                id: node.nodeId.toString() + ":" + newEbookId,
-                source: node.nodeId.toString(),
+                id: node.nodeId + ":" + newEbookId,
+                source: node.nodeId,
                 target: newEbookId,
               };
               result2.edges.push(edgeConfig);

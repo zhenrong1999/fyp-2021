@@ -17,7 +17,11 @@ import { TextLayerItemInternal } from "react-pdf";
 import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "./TextLayer.css";
-import { EbookViewerRequiredProps, ebookSelected } from "../Global/interface";
+import {
+  EbookViewerRequiredProps,
+  ebookSelected,
+  IEbooksContent,
+} from "../Global/interface";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library, IconProp } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -83,6 +87,7 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
   const [currentSearchItem, setCurrentSearchItem] = React.useState(0);
   const [scale, setScale] = React.useState(1);
   const [searchText, setSearchText] = React.useState("");
+  const ebookObj: IEbooksContent = JSON.parse(props.ebookSelected);
   function onDocumentLoadSuccess(pdf: pdfjs.PDFDocumentProxy) {
     const numPages = pdf.numPages;
     setNumPages(numPages);
@@ -99,7 +104,7 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
     [searchText]
   );
 
-  if (props.ebookSelected && props.ebookSelected.EbookId > -1) {
+  if (ebookObj && ebookObj.EbookId > -1) {
     const divRef = React.createRef<HTMLDivElement>();
     const searchInput = React.createRef<HTMLInputElement>();
 

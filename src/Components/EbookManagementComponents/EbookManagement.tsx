@@ -9,16 +9,17 @@ import {
   EbookBlobManagementEditableProps,
   MindMapEditorContextProps,
   MindMapInterface,
+  ebookSelected,
 } from "../Global/interface";
 import { EbookManagementRightPanel } from "./EbookManagementRightPanel";
 
 interface EbookManagementProps
   extends ProviderProps,
     EbookBlobManagementEditableProps,
-    MindMapEditorContextProps {
+    MindMapEditorContextProps,
+    ebookSelected {
   setGraphClass: (graph: MindMapInterface.Graph) => void;
-  ebookSelected: IEbooksContent;
-  setEbookSelected: (ebook: IEbooksContent) => void;
+  setEbookSelectedMain: (ebookSelected: IEbooksContent) => void;
 }
 
 export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
@@ -26,48 +27,50 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
 ) => {
   const [fileBlob, setFileBlob] = useState<string>();
 
-  React.useEffect(() => {
-    console.log("Selected Ebook Index is ", props.ebookSelected);
-  }, [props.ebookSelected]);
   const divStyle = {
     flex: 1,
     overflow: "hidden",
     height: "100%",
   };
+  const [ebookSelected, setEbookSelected] = React.useState<string>(
+    props.ebookSelected
+  );
+  React.useEffect(() => {
+    console.log("Selected Ebook Index is ", ebookSelected);
+  }, [ebookSelected]);
+  React.useEffect(() => {
+    return () => {
+      props.setEbookSelectedMain(JSON.parse(ebookSelected));
+    };
+  });
+  function onChange(ebook: IEbooksContent) {
+    setEbookSelected(JSON.stringify(ebook));
+  }
+
   return (
     <div style={divStyle}>
-      {/* <Flex fill style={divStyle}> */}
-      {/* <Flex.Item className="ebookManagementLeftPanel"> */}
       <EbookList
-        className="ebookManagementLeftPanel"
-        ebookSelected={props.ebookSelected}
-        setEbookSelected={props.setEbookSelected}
-        setFileBlob={setFileBlob}
         {...props}
+        className="ebookManagementLeftPanel"
+        ebookSelected={ebookSelected}
+        setEbookSelected={onChange}
+        setFileBlob={setFileBlob}
       />
-      {/* </Flex.Item> */}
-      {/* </Flex> */}
-      {/* <Flex.Item grow className="pdfViewer"> */}
 
       <EbookManagementRightPanel
-        className="ebookManagementRightPanel"
-        ebookSelected={props.ebookSelected}
-        setEbookSelected={props.setEbookSelected}
         {...props}
+        className="ebookManagementRightPanel"
+        ebookSelected={ebookSelected}
+        // setEbookSelected={onChange}
       />
 
       <EbookViewer
+        {...props}
         className="pdfViewer"
         fileBlob={fileBlob}
-        ebookSelected={props.ebookSelected}
-        setEbookSelected={props.setEbookSelected}
-        {...props}
+        ebookSelected={ebookSelected}
+        // setEbookSelected={onChange}
       />
-      {/* <Flex fill style={divStyle}> */}
-      {/* <Flex.Item push className="ebookManagementRightPanel"> */}
-
-      {/* </Flex.Item> */}
-      {/* </Flex> */}
     </div>
   );
 };

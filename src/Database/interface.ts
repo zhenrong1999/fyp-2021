@@ -1,12 +1,13 @@
 export interface IEbooksContent {
   EbookId?: number;
   title: string;
+  fileName: string;
   fileHash: string;
   NoteList: number[];
 }
 
 export interface INode2Note {
-  MindMapNodeId: number;
+  MindMapNodeId: string;
   NoteList?: number[];
 }
 

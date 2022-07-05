@@ -34,7 +34,7 @@ export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
     title: "",
   } as IEbooksContent);
   const [onChangeMindMapNodeId, setOnChangeMindMapNodeId] =
-    React.useState<number>(-1);
+    React.useState<string>("-1");
   const [nodeLabel, setNodeLabel] = React.useState("");
   React.useEffect(() => {
     if (props.EbookId) {
@@ -49,9 +49,7 @@ export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
       setOnChangeMindMapNodeId(props.MindMapNodeId);
     } else {
       if (props.graphClass)
-        setOnChangeMindMapNodeId(
-          Number(props.graphClass.getNodes()[0].getModel().id)
-        );
+        setOnChangeMindMapNodeId(props.graphClass.getNodes()[0].getModel().id);
     }
     console.log("props.MindMapNodeId in add note button", props.MindMapNodeId);
   }, [props.MindMapNodeId, props.graphClass]);

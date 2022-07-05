@@ -2,12 +2,15 @@ import { INode2Note } from "./interface";
 import { ADbFunctions } from "./BaseDb";
 
 export class NodeFunctions extends ADbFunctions {
-  async getNode2Note(MindMapNodeId: number) {
+  async getNode2Note(MindMapNodeId: string) {
     return NodeFunctions.db.transaction(
       "r",
       NodeFunctions.db.node2NoteTable,
       () => {
-        return NodeFunctions.db.node2NoteTable.get(MindMapNodeId);
+        return NodeFunctions.db.node2NoteTable
+          .where("MindMapNodeId")
+          .equals(MindMapNodeId)
+          .first();
       }
     );
   }
@@ -22,12 +25,15 @@ export class NodeFunctions extends ADbFunctions {
     );
   }
 
-  async updateNode2Note(MindMapNodeId: number, node2Note: INode2Note) {
+  async updateNode2Note(MindMapNodeId: string, node2Note: INode2Note) {
     return NodeFunctions.db.transaction(
       "rw",
       NodeFunctions.db.node2NoteTable,
-      () => {
-        return NodeFunctions.db.node2NoteTable.update(MindMapNodeId, node2Note);
+      async () => {
+        return NodeFunctions.db.node2NoteTable.update(
+          await this.getNode2Note(MindMapNodeId),
+          node2Note
+        );
       }
     );
   }
@@ -36,24 +42,24 @@ export class NodeFunctions extends ADbFunctions {
       "rw",
       NodeFunctions.db.node2NoteTable,
       () => {
-        return NodeFunctions.db.node2NoteTable.add(
-          node2Note,
-          node2Note.MindMapNodeId
-        );
+        return NodeFunctions.db.node2NoteTable.add(node2Note);
       }
     );
   }
-  async deleteNode2Note(MindMapNodeId: number) {
+  async deleteNode2Note(MindMapNodeId: string) {
     return NodeFunctions.db.transaction(
       "rw",
       NodeFunctions.db.node2NoteTable,
       () => {
-        return NodeFunctions.db.node2NoteTable.delete(MindMapNodeId);
+        return NodeFunctions.db.node2NoteTable
+          .where("MindMapNodeId")
+          .equals(MindMapNodeId)
+          .delete();
       }
     );
   }
 
-  async addNewNoteToNode2Note(MindMapNodeId: number, noteId: number) {
+  async addNewNoteToNode2Note(MindMapNodeId: string, noteId: number) {
     const node2Note = await this.getNode2Note(MindMapNodeId);
     if (node2Note) {
       node2Note.NoteList.push(noteId);
@@ -77,26 +83,24 @@ export class NodeFunctions extends ADbFunctions {
     } else return null;
   }
 
-  async deleteNoteIdFromNode2Note(MindMapNodeId: number, noteId: number) {
+  async deleteNoteIdFromNode2Note(MindMapNodeId: string, noteId: number) {
     return NodeFunctions.db.transaction(
       "rw",
       NodeFunctions.db.node2NoteTable,
       () => {
-        return NodeFunctions.db.node2NoteTable
-          .get(MindMapNodeId)
-          .then((node) => {
-            if (node.NoteList.includes(noteId)) {
-              return NodeFunctions.db.node2NoteTable.update(node, {
-                NoteList: node.NoteList.filter((id) => id !== noteId),
-              });
-            }
-            return Promise.reject("NoteId not found");
-          });
+        return this.getNode2Note(MindMapNodeId).then((node) => {
+          if (node.NoteList.includes(noteId)) {
+            return NodeFunctions.db.node2NoteTable.update(node, {
+              NoteList: node.NoteList.filter((id) => id !== noteId),
+            });
+          }
+          return Promise.reject("NoteId not found");
+        });
       }
     );
   }
 
-  async updateNoteToNode2Note(MindMapNodeId: number, noteId: number) {
+  async updateNoteToNode2Note(MindMapNodeId: string, noteId: number) {
     const oldMindMapNodeId = await this.getNodeIdByNoteId(noteId);
     if (MindMapNodeId !== oldMindMapNodeId) {
       this.deleteNoteIdFromNode2Note(oldMindMapNodeId, noteId);

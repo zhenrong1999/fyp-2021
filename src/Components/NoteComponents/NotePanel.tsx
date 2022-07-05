@@ -10,7 +10,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { INoteContent, MindMapEditorContextProps } from "../Global/interface";
 
 interface INotePanel extends ProviderProps, MindMapEditorContextProps {
-  MindMapNodeId?: number;
+  MindMapNodeId?: string;
   EbookId?: number;
   disableNodeLabelRename?: boolean;
 }

@@ -38,7 +38,7 @@ export const EditNoteButton: React.FunctionComponent<EditNoteButtonProps> = (
     title: "",
   } as IEbooksContent);
   const [onChangeMindMapNodeId, setOnChangeMindMapNodeId] =
-    React.useState<number>(props.MindMapNodeId);
+    React.useState<string>(props.MindMapNodeId);
 
   const [nodeLabel, setNodeLabel] = React.useState("");
 

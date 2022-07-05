@@ -9,53 +9,9 @@ export class MindFlowBaseDb extends Dexie {
   constructor() {
     super("MindFlowDb", { autoOpen: true, allowEmptyDB: true });
     this.version(1).stores({
-      ebooksTable: "EbookId++, title, fileHash, NoteList",
+      ebooksTable: "EbookId++, title,fileName, fileHash, NoteList",
       node2NoteTable: "MindMapNodeId++, NoteList",
       notesTable: "NoteId++, NoteContent, EbookId",
-    });
-  }
-
-  linkNote(MindMapNodeId: number, noteId: number) {
-    return this.transaction(
-      "rw",
-      this.node2NoteTable,
-      this.notesTable,
-      async () => {
-        // if ((await this.notesTable.get(noteId)) !== undefined && !(await this.node2NoteTable.get(MindMapNodeId)).noteList.includes(noteId)) {
-        const noteList = (await this.node2NoteTable.get(MindMapNodeId))
-          .NoteList;
-        this.node2NoteTable.update(MindMapNodeId, {
-          NoteList: [...noteList, noteId],
-        });
-        // }
-      }
-    );
-  }
-
-  async haveSameEbookContent(fileHash: string) {
-    return this.ebooksTable
-      .where("fileHash")
-      .equals(fileHash)
-      .count()
-      .then((count) => {
-        return count > 0;
-      })
-      .catch((err) => {
-        console.error(err);
-        return false;
-      });
-  }
-
-  deleteNote(noteId: number) {
-    return this.transaction("rw", this.node2NoteTable, this.notesTable, () => {
-      this.node2NoteTable.each((node) => {
-        if (node.NoteList.includes(noteId)) {
-          this.node2NoteTable.update(node, {
-            NoteList: node.NoteList.filter((id) => id !== noteId),
-          });
-        }
-      });
-      this.notesTable.where("NoteId").equals(noteId).delete();
     });
   }
 

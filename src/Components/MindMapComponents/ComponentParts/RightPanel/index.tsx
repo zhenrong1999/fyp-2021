@@ -195,7 +195,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
         {this.state.TargetModel && (
           <>
             <NotePanel
-              MindMapNodeId={toNumber(this.state.TargetModel.id)}
+              MindMapNodeId={this.state.TargetModel.id}
               graphClass={this.props.graph}
               setGraphClass={undefined}
               disableNodeLabelRename={true}

@@ -33,8 +33,7 @@ export interface EbookViewerSettingProps {
 }
 
 export interface ebookSelected {
-  ebookSelected: IEbooksContent;
-  setEbookSelected: (ebookSelected: IEbooksContent) => void;
+  ebookSelected: string;
 }
 
 export interface MindMapGraphProps {

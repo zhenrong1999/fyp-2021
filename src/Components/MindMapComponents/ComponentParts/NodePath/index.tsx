@@ -84,63 +84,67 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
 
     if (CurrentNodeId) {
       const nodePath = breadthFirstSearch(data, CurrentNodeId, []);
-      const path = nodePath.map((item: NodeConfig, index: number, array) => {
-        const dividerKey = index.toString() + "divider";
-        const nodeKey = index.toString() + "node";
-        const button = (
-          <Button
-            flat
-            size="small"
-            title={item.label as string}
-            content={item.label as string}
-            onClick={() => onClickNode(item.id)}
-          />
-        );
-        const menu:
-          | ObjectShorthandValue<MenuProps>
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          | ShorthandCollection<MenuItemProps, Record<string, {}>>
-          | { key: string; content: string }[] = [];
-        if (index > 0) {
-          if (array[index - 1].children) {
-            array[index - 1].children.forEach((child: NodeConfig) => {
-              menu.push({
-                key: child.id,
-                content: child.label as string,
-                onClick: () => onClickNode(child.id),
+      const path = nodePath.map(
+        (item: NodeConfig, index: number, pathArray) => {
+          const dividerKey = index.toString() + "divider";
+          const nodeKey = index.toString() + "node";
+          const button = (
+            <Button
+              flat
+              size="small"
+              title={item.label as string}
+              content={item.label as string}
+              onClick={() => onClickNode(item.id)}
+            />
+          );
+          const menu:
+            | ObjectShorthandValue<MenuProps>
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            | ShorthandCollection<MenuItemProps, Record<string, {}>>
+            | { key: string; content: string }[] = [];
+          if (index > 0) {
+            if (pathArray[index - 1].children) {
+              pathArray[index - 1].children.forEach((child: NodeConfig) => {
+                menu.push({
+                  key: child.id,
+                  content: child.label as string,
+                  onClick: () => onClickNode(child.id),
+                });
               });
+            }
+            menu.push({
+              key: "addNode",
+              content: "Add Topic/Node",
+              onClick: () => {
+                onClickNode(item.id);
+                props.commandManager.execute(props.graph, EditorCommand.Topic);
+                // props.executeCommand(EditorCommand.Topic);
+                checkIfSetSelectedNode();
+              },
             });
           }
-          menu.push({
-            key: "addNode",
-            content: "Add Topic/Node",
-            onClick: () => {
-              props.executeCommand(EditorCommand.Topic);
-              checkIfSetSelectedNode();
-            },
-          });
-        }
 
-        return (
-          <Breadcrumb.Item key={nodeKey}>
-            {index > 0 && (
-              <Breadcrumb.Divider key={dividerKey}>
-                <ChevronEndMediumIcon />
-              </Breadcrumb.Divider>
-            )}
-            {menu.length > 0 ? (
-              <SplitButton
-                flat
-                size="small"
-                button={button.props}
-                menu={menu}
-              />
-            ) : (
-              button
-            )}
-          </Breadcrumb.Item>
-        );
-      });
+          return (
+            <Breadcrumb.Item key={nodeKey}>
+              {index > 0 && (
+                <Breadcrumb.Divider key={dividerKey}>
+                  <ChevronEndMediumIcon />
+                </Breadcrumb.Divider>
+              )}
+              {menu.length > 0 ? (
+                <SplitButton
+                  flat
+                  size="small"
+                  button={button.props}
+                  menu={menu}
+                />
+              ) : (
+                button
+              )}
+            </Breadcrumb.Item>
+          );
+        }
+      );
       const button = (
         <Button
           flat
@@ -148,7 +152,9 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
           title="Add SubTopic/Child Node"
           content="Add SubTopic/Child Node"
           onClick={() => {
-            props.executeCommand(EditorCommand.Subtopic);
+            onClickNode(nodePath[nodePath.length - 1].id);
+            props.commandManager.execute(props.graph, EditorCommand.Subtopic);
+            // props.executeCommand(EditorCommand.Subtopic);
             checkIfSetSelectedNode();
           }}
         />

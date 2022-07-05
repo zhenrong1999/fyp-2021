@@ -18,6 +18,7 @@ import {
   EbookBlobManagementEditableProps,
   EbookViewerSettingProps,
   ebookSelected,
+  IEbooksContent,
 } from "../Global/interface";
 import { EbookContext } from "../Global/context";
 
@@ -27,10 +28,12 @@ interface EbookListProps
     EbookViewerSettingProps,
     ebookSelected {
   className?: string;
+  setEbookSelected: (ebookSelected: IEbooksContent) => void;
 }
 
 export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
   // const ebookContextTest = React.useContext(EbookContext);
+  const ebookObj: IEbooksContent = JSON.parse(props.ebookSelected);
   const ebookSize = useLiveQuery(async () => {
     return dbClass.getEbookCounts();
   });
@@ -56,13 +59,13 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
 
   if (ebookListArray) {
     index = ebookListArray.findIndex(
-      (item, index) => item.EbookId === props.ebookSelected.EbookId
+      (item, index) => item.EbookId === ebookObj.EbookId
     );
   }
 
-  if (props.ebookSelected && props.ebookSelected.EbookId > -1) {
+  if (ebookObj && ebookObj.EbookId > -1) {
     props.setFileBlob(
-      props.ebookBlobClassObject.getEbookBlobById(props.ebookSelected.EbookId)
+      props.ebookBlobClassObject.getEbookBlobById(ebookObj.EbookId)
     );
   }
 
@@ -75,7 +78,7 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
       )
     );
     index = selectedIndex;
-    console.log("EbookList id", ebookListArray[selectedIndex]);
+    console.log("EbookList id", JSON.stringify(ebookListArray[selectedIndex]));
   }
 
   return (
