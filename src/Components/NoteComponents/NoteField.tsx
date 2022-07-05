@@ -143,8 +143,9 @@ export const NoteField: React.FunctionComponent<NoteFieldProps> = (props) => {
         CurrentNodeId={currentNodeId}
         setSelectedNodeId={setCurrentNodeId}
       />
-      <Flex>
+      <Flex fill>
         <FormInput
+          fluid
           name={"NodeLabel"}
           label={"Node Label"}
           value={props.nodeLabel}

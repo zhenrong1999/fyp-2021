@@ -193,11 +193,11 @@ export const MainMenu: React.FunctionComponent = () => {
                 content: "Analysis Used of Reference",
                 onClick: changePageFunction,
               },
-              {
-                key: "Resources",
-                content: "Resources",
-                onClick: changePageFunction,
-              },
+              // {
+              //   key: "Resources",
+              //   content: "Resources",
+              //   onClick: changePageFunction,
+              // },
             ]}
             primary
           />

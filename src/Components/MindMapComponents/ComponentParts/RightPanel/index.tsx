@@ -167,14 +167,17 @@ class Panel extends React.Component<PanelProps, PanelState> {
     if (this.state.TargetModel) {
       const { label } = this.state.TargetModel;
       return (
-        <Flex>
-          <FormInput
-            name={"label"}
-            label={capitalize(panelType) + " Label"}
-            value={this.state.changedValue as string}
-            onChange={this.onChangeHandler}
-            onBlur={this.handleSubmit}
-          />
+        <Flex style={{ width: "100%" }}>
+          <Flex.Item grow>
+            <FormInput
+              fluid
+              name={"label"}
+              label={capitalize(panelType) + " Label"}
+              value={this.state.changedValue as string}
+              onChange={this.onChangeHandler}
+              onBlur={this.handleSubmit}
+            />
+          </Flex.Item>
           <Status
             state={
               this.state.labelStatus.state === "success" ? "success" : "error"
@@ -193,7 +196,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
         {this.mapPropsToFields()}
 
         {this.state.TargetModel && (
-          <>
+          <Flex column fill gap="gap.medium">
             <NotePanel
               MindMapNodeId={this.state.TargetModel.id}
               graphClass={this.props.graph}
@@ -205,7 +208,7 @@ class Panel extends React.Component<PanelProps, PanelState> {
               CurrentNodeId={this.state.TargetModel.id}
               {...this.props}
             />
-          </>
+          </Flex>
         )}
 
         <p>a node is selected :) </p>

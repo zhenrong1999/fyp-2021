@@ -3,7 +3,7 @@ import { dbClass } from "../Global/constant";
 import { guid } from "../MindMapComponents/common/utils";
 import { EdgeConfig, NodeConfig } from "@antv/g6";
 
-export async function getNodesToEbook() {
+export async function getNodesToEbook(sharedEbookId: boolean) {
   return dbClass.getNotesArray().then((notes) => {
     return dbClass.getEbooksArray().then((ebooks) => {
       return dbClass
@@ -41,7 +41,12 @@ export async function getNodesToEbook() {
           console.log("result", result);
           result.forEach((node) => {
             node.ebookList.forEach(async (ebook_1) => {
-              const newEbookId = guid();
+              let newEbookId: string;
+              if (sharedEbookId !== true) {
+                newEbookId = "ebook" + guid();
+              } else {
+                newEbookId = "ebook" + ebook_1.toString();
+              }
               const ebookData = ebooks.find(
                 (ebook) => ebook.EbookId === ebook_1
               );

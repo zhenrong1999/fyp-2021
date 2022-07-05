@@ -9,6 +9,8 @@ import {
   MenuProps,
   ObjectShorthandValue,
   ShorthandCollection,
+  Flex,
+  Text,
 } from "@fluentui/react-northstar";
 import { EditorContextProps } from "../EditorContext";
 import { NodeConfig, TreeGraphData, GraphData } from "@antv/g6";
@@ -192,5 +194,10 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
     }
   }
 
-  return <Breadcrumb>{props.graph && BreadcrumbItemMapping()}</Breadcrumb>;
+  return (
+    <Flex column>
+      <Text as="h3" content="Node Path:" />
+      <Breadcrumb>{props.graph && BreadcrumbItemMapping()}</Breadcrumb>
+    </Flex>
+  );
 };

@@ -40,8 +40,16 @@ export const AnalysisComponents: React.FC<AnalysisComponentsProps> = (
       }}
     >
       <Flex column fill style={{ height: "100%" }}>
-        <Flex.Item styles={{ top: 0, position: "sticky", "z-index": 9 }}>
+        <Flex.Item
+          styles={{
+            top: 0,
+            position: "sticky",
+            "z-index": 9,
+            height: "max-content",
+          }}
+        >
           <Menu
+            styles={{ height: "max-content" }}
             defaultActiveIndex={0}
             items={[
               {

@@ -1,16 +1,24 @@
 import React from "react";
-import { ProviderProps } from "@fluentui/react-northstar";
+import {
+  ProviderProps,
+  Flex,
+  Card,
+  Input,
+  Checkbox,
+} from "@fluentui/react-northstar";
 import {
   MindMapEditorContextProps,
   EbookBlobManagementEditableProps,
   IEbooksContent,
 } from "../Global/interface";
 import { getNodesToEbook } from "./PaperRelationAlgo";
-import G6, { EdgeConfig, Graph, GraphData, NodeConfig } from "@antv/g6";
-import ReactDOM from "react-dom";
-import { dbClass, useLiveQuery } from "../Global/constant";
-import { guid } from "../MindMapComponents/common/utils";
-import { result } from "lodash";
+import G6, {
+  EdgeConfig,
+  Graph,
+  GraphData,
+  NodeConfig,
+  LayoutConfig,
+} from "@antv/g6";
 
 interface PaperRelationProps
   extends ProviderProps,
@@ -23,10 +31,18 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
   // const nodes2Ebooks = useLiveQuery(() => getNodesToEbook(), []);
 
   // const graphData = props.graphClass.save();
-
+  const initGraphLayout: LayoutConfig = {
+    type: "radial",
+    linkDistance: 210,
+    nodeSize: 100,
+    nodeSpacing: 100,
+    preventOverlap: true,
+    strictRadial: true,
+  };
   const ref = React.useRef<HTMLDivElement>();
   const [graph, setGraph] = React.useState<Graph>();
   const [graphData, setGraphData] = React.useState<GraphData>();
+  const [IsEbookIdShared, setIsEbookIdShared] = React.useState<boolean>(false);
 
   // getNodesToEbook().then((nodesToEbook) => {
   //   console.log("graphData", nodesToEbook);
@@ -43,12 +59,9 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
         modes: {
           default: ["drag-canvas", "zoom-canvas"],
         },
-        layout: {
-          type: "dagre",
-          direction: "LR",
-        },
+        layout: initGraphLayout,
         defaultNode: {
-          type: "node",
+          type: "ellipse",
           labelCfg: {
             style: {
               fill: "#000000A6",
@@ -57,13 +70,13 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
           },
           style: {
             stroke: "#72CC4A",
-            width: 150,
           },
         },
         defaultEdge: {
-          type: "polyline",
+          type: "line",
         },
       });
+
       setGraph(newGraph);
     }
   }, []);
@@ -91,7 +104,7 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
           return edgeConfig;
         }),
       };
-      getNodesToEbook().then((nodesToEbook) => {
+      getNodesToEbook(IsEbookIdShared).then((nodesToEbook) => {
         console.log("graphData", nodesToEbook);
         // setGraphData(nodesToEbook);
         if (nodesToEbook) {
@@ -100,6 +113,7 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
             const nodeConfig: NodeConfig = {
               id: node.id,
               label: node.label,
+              type: "diamond",
             };
             result.nodes.push(nodeConfig);
             // result.nodes.push(node);
@@ -111,6 +125,9 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
               id: edge.id,
               source: edge.source as string,
               target: edge.target as string,
+              style: {
+                lineDash: [5, 5],
+              },
             };
             result.edges.push(edgeConfig);
             console.log("result edge in graphData", result);
@@ -123,16 +140,54 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
         graph.render();
       });
     }
-  }, [graph, graphData]);
+  }, [IsEbookIdShared, graph, graphData, props.graphClass]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        // overflow: "scroll",
-      }}
-      ref={ref}
-    ></div>
+    <Flex
+      // style={{ width: "100%", height: "100%" }}
+      fill
+    >
+      <div
+        style={{
+          width: "75%",
+          height: "100%",
+          // overflow: "scroll",
+        }}
+        ref={ref}
+      ></div>
+      <Card
+        style={{
+          width: "25%",
+          height: "100%",
+          overflow: "scroll",
+          float: "right",
+        }}
+      >
+        <Flex fill column>
+          <Checkbox
+            label="Ebook Node is Distinct"
+            toggle
+            checked={IsEbookIdShared}
+            onChange={(e: any) => {
+              setIsEbookIdShared(!IsEbookIdShared);
+            }}
+          />
+          <Input
+            fluid
+            labelPosition="inline"
+            label="Radius Length"
+            type="number"
+            defaultValue={String(initGraphLayout.linkDistance)}
+            onChange={(event: React.SyntheticEvent) => {
+              graph.updateLayout({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore-line
+                linkDistance: parseInt(event.target.value),
+              });
+            }}
+          />
+        </Flex>
+      </Card>
+    </Flex>
   );
 };

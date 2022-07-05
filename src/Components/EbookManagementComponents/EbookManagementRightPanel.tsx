@@ -64,13 +64,16 @@ export const EbookManagementRightPanel: React.FC<IEbookManagementRightPanel> = (
       <Flex fill column>
         <Flex.Item>
           <Form style={{ height: "max-content" }}>
-            <FormInput
-              id={"EbookTitle"}
-              name={"EbookTitle"}
-              label={"Ebook Title"}
-              value={title}
-              onChange={onChangeHandler}
-            />
+            <Flex.Item grow>
+              <FormInput
+                fluid
+                id={"EbookTitle"}
+                name={"EbookTitle"}
+                label={"Ebook Title"}
+                value={title}
+                onChange={onChangeHandler}
+              />
+            </Flex.Item>
             <Flex>
               <Flex.Item grow>
                 <Button content="Save" key="submit" />

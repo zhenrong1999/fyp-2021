@@ -103,7 +103,15 @@ export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
       }}
       onOpen={() => {
         setOnChangeNoteContent("");
-        setNodeLabel("");
+        if (onChangeMindMapNodeId !== undefined) {
+          setNodeLabel(
+            props.graphClass
+              .findById(onChangeMindMapNodeId.toString())
+              .getModel().label as string
+          );
+        } else {
+          setNodeLabel("");
+        }
       }}
     />
   );
