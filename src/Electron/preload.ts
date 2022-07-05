@@ -30,6 +30,11 @@ const LoadSaveCallingToRenderer = {
   SaveMindMap: (
     callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void
   ) => ipcRenderer.on("SaveMindMap", callback),
+
+  RemoveEventListener: () => {
+    ipcRenderer.removeAllListeners("LoadMindMap");
+    ipcRenderer.removeAllListeners("SaveMindMap");
+  },
 };
 
 export const API = {

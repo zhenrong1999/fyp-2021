@@ -120,52 +120,57 @@ export const MainMenu: React.FunctionComponent = () => {
     //   );
     // }
   }
-  window.api.LoadSave.LoadMindMap(async (event, savedFileContent) => {
-    if (savedFileContent !== undefined && savedFileContent !== null) {
-      const json = JSON.parse(savedFileContent);
-      const Graph: MindMapInterface.MindData = json.Graph;
-      setGraph(Graph);
-      // graphClass.clear();
-      graphClass.changeData(Graph, false);
-      graphClass.render();
 
-      const EbookList = json.EbookList;
-      ebookBlobList.importFromArray(EbookList);
-      setEbookBlobList(ebookBlobList);
+  React.useEffect(() => {
+    window.api.LoadSave.LoadMindMap(async (event, savedFileContent) => {
+      if (savedFileContent !== undefined && savedFileContent !== null) {
+        const json = JSON.parse(savedFileContent);
+        const Graph: MindMapInterface.MindData = json.Graph;
+        setGraph(Graph);
+        // graphClass.clear();
+        graphClass.changeData(Graph, false);
+        graphClass.render();
 
-      const EbookTable = json.EbookTable;
-      const Node2NoteTable = json.Node2NoteTable;
-      const NoteTable = json.NoteTable;
+        const EbookList = json.EbookList;
+        ebookBlobList.importFromArray(EbookList);
+        setEbookBlobList(ebookBlobList);
 
-      await dbClass.getDbInstance().clear();
-      await dbClass
-        .getDbInstance()
-        .importFromJson(EbookTable, Node2NoteTable, NoteTable);
-      alert("Mind Map loaded successfully!");
-    }
-  });
+        const EbookTable = json.EbookTable;
+        const Node2NoteTable = json.Node2NoteTable;
+        const NoteTable = json.NoteTable;
 
-  window.api.LoadSave.SaveMindMap(async (event, filePath) => {
-    console.log("SaveMindMapEvent");
+        await dbClass.getDbInstance().clear();
+        await dbClass
+          .getDbInstance()
+          .importFromJson(EbookTable, Node2NoteTable, NoteTable);
+        alert("Mind Map loaded successfully!");
+      }
+    });
 
-    if (filePath !== undefined && filePath !== null) {
-      const Graph = graphClass.save();
-      const EbookList = ebookBlobList.exportEbookBlobList();
-      const EbookTable = await dbClass.getEbooksArray();
-      const Node2NoteTable = await dbClass.getNode2NotesArray();
-      const NoteTable = await dbClass.getNotesArray();
-      const savedFileContent: string = JSON.stringify({
-        Graph,
-        EbookList,
-        EbookTable,
-        Node2NoteTable,
-        NoteTable,
-      });
-      event.sender.send("saveMindMap-reply", filePath, savedFileContent);
-    }
-    return;
-  });
+    window.api.LoadSave.SaveMindMap(async (event, filePath) => {
+      console.log("SaveMindMapEvent");
 
+      if (filePath !== undefined && filePath !== null) {
+        const Graph = graphClass.save();
+        const EbookList = ebookBlobList.exportEbookBlobList();
+        const EbookTable = await dbClass.getEbooksArray();
+        const Node2NoteTable = await dbClass.getNode2NotesArray();
+        const NoteTable = await dbClass.getNotesArray();
+        const savedFileContent: string = JSON.stringify({
+          Graph,
+          EbookList,
+          EbookTable,
+          Node2NoteTable,
+          NoteTable,
+        });
+        event.sender.send("saveMindMap-reply", filePath, savedFileContent);
+      }
+      return;
+    });
+    return () => {
+      window.api.LoadSave.RemoveEventListener();
+    };
+  }, [ebookBlobList, graphClass]);
   return (
     <Provider theme={teamsTheme} style={{ height: "100vh" }}>
       <Flex column fill style={{ height: "100vh" }}>
