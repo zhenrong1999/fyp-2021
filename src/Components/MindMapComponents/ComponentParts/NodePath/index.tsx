@@ -36,7 +36,7 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
 
   console.log("Graph in NodePath", props.graph);
 
-  function breadthFirstSearch(
+  function depthFirstSearch(
     node: TreeGraphData | GraphData,
     targetId: string,
     visited: NodeConfig[]
@@ -47,15 +47,18 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
     }
     const children = node.children;
     if (children) {
-      visited.push(node as NodeConfig);
       for (let i = 0; i < children.length; i++) {
-        const result = breadthFirstSearch(children[i], targetId, visited);
-        if (result.length > visited.length) {
+        const result = depthFirstSearch(children[i], targetId, [
+          ...visited,
+          node as NodeConfig,
+        ]);
+        if (result[result.length - 1].id === targetId) {
           visited = result;
           break;
         }
       }
     }
+    console.log("visited", visited);
     return visited;
   }
 
@@ -66,6 +69,7 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
     if (setSelectedNodeId) {
       setSelectedNodeId(nodeId);
     }
+
     console.log("Selected node", nodeId);
   }
 
@@ -85,7 +89,7 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
     }
 
     if (CurrentNodeId) {
-      const nodePath = breadthFirstSearch(data, CurrentNodeId, []);
+      const nodePath = depthFirstSearch(data, CurrentNodeId, []);
       const path = nodePath.map(
         (item: NodeConfig, index: number, pathArray) => {
           const dividerKey = index.toString() + "divider";
@@ -154,7 +158,6 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
           title="Add SubTopic/Child Node"
           content="Add SubTopic/Child Node"
           onClick={() => {
-            onClickNode(nodePath[nodePath.length - 1].id);
             props.commandManager.execute(props.graph, EditorCommand.Subtopic);
             // props.executeCommand(EditorCommand.Subtopic);
             checkIfSetSelectedNode();

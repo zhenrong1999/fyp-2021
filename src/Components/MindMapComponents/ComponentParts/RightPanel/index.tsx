@@ -198,15 +198,15 @@ class Panel extends React.Component<PanelProps, PanelState> {
         {this.state.TargetModel && (
           <Flex column fill gap="gap.medium">
             <NotePanel
+              {...this.props}
               MindMapNodeId={this.state.TargetModel.id}
               graphClass={this.props.graph}
               setGraphClass={undefined}
               disableNodeLabelRename={true}
-              {...this.props}
             />
             <NodePath
-              CurrentNodeId={this.state.TargetModel.id}
               {...this.props}
+              CurrentNodeId={this.state.TargetModel.id}
             />
           </Flex>
         )}
