@@ -39,22 +39,22 @@ export class NoteFunctions extends ADbFunctions {
       NoteFunctions.db.node2NoteTable,
       NoteFunctions.db.notesTable,
       NoteFunctions.db.ebooksTable,
-      () => {
-        NoteFunctions.db.node2NoteTable.each((node) => {
+      async () => {
+        await NoteFunctions.db.node2NoteTable.each((node) => {
           if (node.NoteList.includes(noteId)) {
             NoteFunctions.db.node2NoteTable.update(node, {
               NoteList: node.NoteList.filter((id) => id !== noteId),
             });
           }
         });
-        NoteFunctions.db.ebooksTable.each((ebook) => {
+        await NoteFunctions.db.ebooksTable.each((ebook) => {
           if (ebook.NoteList.includes(noteId)) {
             NoteFunctions.db.ebooksTable.update(ebook, {
-              NoteList: ebook.NoteList.filter((id) => id !== noteId),
+              NoteList: ebook.NoteList.filter((id_1) => id_1 !== noteId),
             });
           }
         });
-        return NoteFunctions.db.notesTable
+        return await NoteFunctions.db.notesTable
           .where("NoteId")
           .equals(noteId)
           .delete();
@@ -98,7 +98,12 @@ export class NoteFunctions extends ADbFunctions {
     };
     NoteFunctions.db.notesTable.get(noteId).then((note) => {
       if (note.EbookId !== newNote.EbookId) {
-        dbClass.linkEbookToNote(newNote.EbookId, noteId);
+        if (note.EbookId !== undefined) {
+          dbClass.unLinkEbookFromNote(note.EbookId, noteId);
+        }
+        if (newNote.EbookId !== undefined) {
+          dbClass.linkEbookToNote(newNote.EbookId, noteId);
+        }
       }
     });
     return await this.updateNote(noteId, newNote);

@@ -13,7 +13,6 @@ import {
 } from "@fluentui/react-northstar";
 import { LoadingPage } from "./Utils/LoadingPage";
 import { SaveMindMap } from "./Utils/SaveMindMap";
-import { WebView } from "./Utils/WebView";
 import { EbookBlobManagement } from "./EbookManagementComponents/EbookBlobManagement";
 import { OpenMindMap } from "./Utils/OpenMindMap";
 import { CommandManager } from "./MindMapComponents";
@@ -109,15 +108,6 @@ export const MainMenu: React.FunctionComponent = () => {
     //       commandManager={commandManager}
     //     />
     //   );
-    // } else if (MenuIndex === 3) {
-    //   setChangePage(
-    //     <>
-    //       <WebView
-    //         ebookBlobClassObject={ebookBlobList}
-    //         setEbookBlobClassObject={setEbookBlobList}
-    //       />
-    //     </>
-    //   );
     // }
   }
 
@@ -143,7 +133,10 @@ export const MainMenu: React.FunctionComponent = () => {
         await dbClass
           .getDbInstance()
           .importFromJson(EbookTable, Node2NoteTable, NoteTable);
-        alert("Mind Map loaded successfully!");
+        window.api.browserWindow.infoDialog({
+          message: "Mind Map loaded successfully!",
+          type: "info",
+        });
       }
     });
 
@@ -193,11 +186,6 @@ export const MainMenu: React.FunctionComponent = () => {
                 content: "Analysis Used of Reference",
                 onClick: changePageFunction,
               },
-              // {
-              //   key: "Resources",
-              //   content: "Resources",
-              //   onClick: changePageFunction,
-              // },
             ]}
             primary
           />
@@ -246,14 +234,6 @@ export const MainMenu: React.FunctionComponent = () => {
                 executeCommand={executeCommand}
                 commandManager={commandManager}
               />
-            )}
-            {MenuIndex === 3 && (
-              <>
-                <WebView
-                  ebookBlobClassObject={ebookBlobList}
-                  setEbookBlobClassObject={setEbookBlobList}
-                />
-              </>
             )}
           </>
         </Flex.Item>

@@ -23,10 +23,16 @@ export const DeleteNoteButton: React.FunctionComponent<
         await dbClass
           .deleteNote(props.noteId)
           .then(() => {
-            alert("Note Deleted");
+            window.api.browserWindow.infoDialog({
+              message: "Note Deleted",
+              type: "info",
+            });
           })
           .catch((err) => {
-            alert("Deleting Note \n" + err);
+            window.api.browserWindow.infoDialog({
+              message: "Deleting Note \n" + err,
+              type: "error",
+            });
           });
       }}
     />

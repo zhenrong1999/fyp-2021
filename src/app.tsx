@@ -13,6 +13,7 @@ const root = createRoot(container);
 
 import { LoadingPage } from "./Components/Utils/LoadingPage";
 root.render(<LoadingPage />);
-
+// ReactDOM.render(<LoadingPage />, container);
 import { MainMenu } from "./Components/MainMenu";
+// ReactDOM.render(<MainMenu />, container);
 root.render(<MainMenu />);

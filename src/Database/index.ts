@@ -7,9 +7,9 @@ import { applyMixins } from "./Utils/Mixim";
 import { useLiveQuery } from "dexie-react-hooks";
 
 class MindFlowDb extends ADbFunctions {
-  public static MindFlowDb() {
-    return MindFlowDb.db;
-  }
+  // public static MindFlowDb() {
+  //   return MindFlowDb.db;
+  // }
   public getDbInstance() {
     return MindFlowDb.db;
   }
@@ -23,7 +23,7 @@ export { IEbooksContent, INode2Note, INoteContent };
 export const dbClass = new MindFlowDb();
 export { useLiveQuery };
 export const db = () => {
-  return MindFlowDb.db;
+  return dbClass.getDbInstance();
 };
 
 export default dbClass.getDbInstance();

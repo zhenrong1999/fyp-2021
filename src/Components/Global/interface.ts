@@ -42,10 +42,10 @@ export interface MindMapGraphProps {
 }
 
 export interface MindMapEditorContextProps {
-  graphClass: Interface.Graph;
+  graphClass: Interface.Graph | undefined;
   setGraphClass: (graphClass: Interface.Graph) => void;
-  executeCommand: (name: string, params?: object) => void;
-  commandManager: CommandManager;
+  executeCommand: undefined | ((name: string, params?: object) => void);
+  commandManager: CommandManager | undefined;
 }
 
 export {

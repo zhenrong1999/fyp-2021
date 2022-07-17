@@ -11,7 +11,6 @@ const files = {
     ipcRenderer.invoke("app:writeFile", filePath, data),
   writeFileTest: (filePath: string) =>
     ipcRenderer.invoke("app:writeFile", filePath),
-  downloadFile: (url: string) => ipcRenderer.invoke("app:downloadFile", url),
 };
 
 const browserWindow = {

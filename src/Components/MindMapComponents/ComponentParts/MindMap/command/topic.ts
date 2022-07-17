@@ -1,7 +1,7 @@
-import { guid } from '../../../common/utils';
-import { LABEL_DEFAULT_TEXT } from '../../../common/constants';
-import { TreeGraph, MindData } from '../../../common/interfaces';
-import { BaseCommand, baseCommand } from '../../Graph/command/base';
+import { guid } from "../../../common/utils";
+import { LABEL_DEFAULT_TEXT } from "../../../common/constants";
+import { TreeGraph, MindData } from "../../../common/interfaces";
+import { BaseCommand, baseCommand } from "../../Graph/command/base";
 
 export interface TopicCommandParams {
   id: string;
@@ -12,16 +12,20 @@ export const topicCommand: BaseCommand<TopicCommandParams, TreeGraph> = {
   ...baseCommand,
 
   params: {
-    id: '',
+    id: "",
     model: {
-      id: '',
+      id: "",
     },
   },
 
   canExecute(graph) {
     const selectedNodes = this.getSelectedNodes(graph);
 
-    return selectedNodes.length && selectedNodes.length === 1 && selectedNodes[0].get('parent');
+    return (
+      selectedNodes.length &&
+      selectedNodes.length === 1 &&
+      selectedNodes[0].get("parent")
+    );
   },
 
   init(graph) {
@@ -32,7 +36,7 @@ export const topicCommand: BaseCommand<TopicCommandParams, TreeGraph> = {
     const selectedNode = this.getSelectedNodes(graph)[0];
 
     this.params = {
-      id: selectedNode.get('id'),
+      id: selectedNode.get("id"),
       model: {
         id: guid(),
         label: LABEL_DEFAULT_TEXT,
@@ -43,15 +47,15 @@ export const topicCommand: BaseCommand<TopicCommandParams, TreeGraph> = {
   execute(graph) {
     const { id, model } = this.params;
 
-    const parent = graph.findById(id).get('parent');
+    const parent = graph.findById(id).get("parent");
 
-    // 添加节点
+    // Add Node
     graph.addChild(model, parent);
 
-    // 选中节点
+    // Select Node
     this.setSelectedItems(graph, [model.id]);
 
-    // 编辑节点
+    // Edit Node
     this.editSelectedNode(graph);
   },
 
@@ -63,7 +67,7 @@ export const topicCommand: BaseCommand<TopicCommandParams, TreeGraph> = {
     graph.removeChild(model.id);
   },
 
-  shortcuts: ['Enter'],
+  shortcuts: ["Enter"],
 };
 
 export default topicCommand;

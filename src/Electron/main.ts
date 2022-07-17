@@ -157,21 +157,12 @@ async function infoDialog(messageBoxOptions: Electron.MessageBoxOptions) {
   return response;
 }
 
-async function downloadFile(url: string) {
-  return download(url).then((data) => {
-    return data;
-  });
-}
-
 app.whenReady().then(() => {
   ipcMain.handle("dialog:openEbookFile", handleEbookFileOpen);
   ipcMain.handle("dialog:openMindMapFile", handleMindMapFileOpen);
   ipcMain.handle("dialog:saveMindMapFile", handleMindMapFileSave);
   ipcMain.handle("browserWindow:getSize", getSize);
   ipcMain.handle("app:getTempPath", getTempPath);
-  ipcMain.handle("app:downloadFile", (_event, url) => {
-    downloadFile(url);
-  });
   ipcMain.handle("app:infoDialog", (_event, messageBoxOptions) =>
     infoDialog(messageBoxOptions)
   );

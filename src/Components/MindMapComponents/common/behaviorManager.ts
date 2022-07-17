@@ -1,7 +1,7 @@
-import G6 from '@antv/g6';
-import { isMind } from './utils';
-import { GraphType } from './constants';
-import { Graph, Behavior } from './interfaces';
+import G6 from "@antv/g6";
+import { isMind } from "./utils";
+import { GraphType } from "./constants";
+import { Graph, Behavior } from "./interfaces";
 
 class BehaviorManager {
   behaviors: {
@@ -15,7 +15,7 @@ class BehaviorManager {
   getRegisteredBehaviors(type: GraphType) {
     const registeredBehaviors = {};
 
-    Object.keys(this.behaviors).forEach(name => {
+    Object.keys(this.behaviors).forEach((name) => {
       const behavior = this.behaviors[name];
 
       const { graphType } = behavior;
@@ -24,7 +24,7 @@ class BehaviorManager {
         return;
       }
 
-      const { graphMode = 'default' } = behavior;
+      const { graphMode = "default" } = behavior;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-expect-error
       if (!registeredBehaviors[graphMode]) {
@@ -43,13 +43,11 @@ class BehaviorManager {
   wrapEventHandler(type: GraphType, behavior: Behavior): Behavior {
     const events = behavior.getEvents();
 
-    Object.keys(events).forEach(event => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-expect-error
+    Object.keys(events).forEach((event) => {
       const handlerName = events[event];
       const handler = behavior[handlerName];
 
-      behavior[handlerName] = function(...params: any[]) {
+      behavior[handlerName] = function (...params: any[]) {
         const { graph } = this;
 
         if (
@@ -71,11 +69,17 @@ class BehaviorManager {
 
     switch (graphType) {
       case GraphType.Flow:
-        G6.registerBehavior(name, this.wrapEventHandler(GraphType.Flow, behavior));
+        G6.registerBehavior(
+          name,
+          this.wrapEventHandler(GraphType.Flow, behavior)
+        );
         break;
 
       case GraphType.Mind:
-        G6.registerBehavior(name, this.wrapEventHandler(GraphType.Mind, behavior));
+        G6.registerBehavior(
+          name,
+          this.wrapEventHandler(GraphType.Mind, behavior)
+        );
         break;
 
       default:

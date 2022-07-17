@@ -139,8 +139,6 @@ class GraphComponent extends React.Component<GraphProps, GraphState> {
 
     (Object.keys(events) as GraphReactEvent[]).forEach((event) => {
       if (typeof props[event] === "function") {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-expect-error
         graph.on(events[event], props[event]);
       }
     });

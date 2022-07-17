@@ -32,8 +32,7 @@ class Command extends React.Component<CommandProps, CommandState> {
     this.setState({
       disabled: !commandManager.canExecute(graph, name),
     });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-expect-error
+
     graph.on(EditorEvent.onGraphStateChange, () => {
       this.setState({
         disabled: !commandManager.canExecute(graph, name),

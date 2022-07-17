@@ -1,6 +1,6 @@
-import { TreeGraph, MindData } from '../../../common/interfaces';
-import { BaseCommand } from '../../Graph/command/base';
-import topicCommand from './topic';
+import { TreeGraph, MindData } from "../../../common/interfaces";
+import { BaseCommand } from "../../Graph/command/base";
+import topicCommand from "./topic";
 
 export interface SubtopicCommandParams {
   id: string;
@@ -17,17 +17,17 @@ const subtopicCommand: BaseCommand<SubtopicCommandParams, TreeGraph> = {
   execute(graph) {
     const { id, model } = this.params;
 
-    // 添加节点
+    // Add Node
     graph.addChild(model, id);
 
-    // 选中节点
+    // Select Node
     this.setSelectedItems(graph, [model.id]);
 
-    // 编辑节点
+    // Edit Node
     this.editSelectedNode(graph);
   },
 
-  shortcuts: ['Tab'],
+  shortcuts: ["Tab"],
 };
 
 export default subtopicCommand;

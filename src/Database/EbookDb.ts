@@ -26,12 +26,13 @@ export class EbookFunctions extends ADbFunctions {
     return EbookFunctions.db.transaction(
       "rw",
       EbookFunctions.db.ebooksTable,
+      EbookFunctions.db.notesTable,
       async () => {
         EbookFunctions.db.transaction(
           "rw",
           EbookFunctions.db.notesTable,
           async () => {
-            EbookFunctions.db.notesTable.each((note) => {
+            await EbookFunctions.db.notesTable.each((note) => {
               if (note.EbookId === id) {
                 EbookFunctions.db.notesTable.update(note, {
                   EbookId: undefined,
@@ -87,26 +88,13 @@ export class EbookFunctions extends ADbFunctions {
     );
   }
 
-  async getEbookIndexFromId(id: number) {
-    const EbooksList = await this.getEbooksArray();
-    return EbooksList.findIndex((ebook) => ebook.EbookId === id);
-  }
-
-  async getEbooksTitleArray() {
-    const EbooksList = await this.getEbooksArray();
-    return EbooksList.map((ebook) => ebook.title);
-  }
-
   async linkEbookToNote(ebookId: number, noteId: number) {
     return EbookFunctions.db.transaction(
       "rw",
       EbookFunctions.db.ebooksTable,
       async () => {
         return EbookFunctions.db.ebooksTable.update(ebookId, {
-          NoteList: [
-            ...(await EbookFunctions.db.ebooksTable.get(ebookId)).NoteList,
-            noteId,
-          ],
+          NoteList: [...(await this.getEbook(ebookId)).NoteList, noteId],
         });
       }
     );
@@ -136,10 +124,6 @@ export class EbookFunctions extends ADbFunctions {
           .count()
           .then((count) => {
             return count > 0;
-          })
-          .catch((err) => {
-            console.error(err);
-            return false;
           });
       }
     );

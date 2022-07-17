@@ -83,7 +83,7 @@ export const EditNoteButton: React.FunctionComponent<EditNoteButtonProps> = (
           onChangeEbook.EbookId
         );
         if (onChangeMindMapNodeId) {
-          dbClass.updateNoteToNode2Note(onChangeMindMapNodeId, props.noteId);
+          dbClass.moveNoteToNewNode2Note(onChangeMindMapNodeId, props.noteId);
         }
       }}
       onOpen={() => {

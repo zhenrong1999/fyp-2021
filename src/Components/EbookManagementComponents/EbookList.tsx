@@ -57,13 +57,13 @@ export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
     : [];
   let index = -1;
 
-  if (ebookListArray) {
+  if (ebookListArray && ebookObj.EbookId !== undefined) {
     index = ebookListArray.findIndex(
-      (item, index) => item.EbookId === ebookObj.EbookId
+      (item, index) => item.EbookId === ebookObj?.EbookId
     );
   }
 
-  if (ebookObj && ebookObj.EbookId > -1) {
+  if (ebookObj.EbookId !== undefined && ebookObj.EbookId > -1) {
     props.setFileBlob(
       props.ebookBlobClassObject.getEbookBlobById(ebookObj.EbookId)
     );

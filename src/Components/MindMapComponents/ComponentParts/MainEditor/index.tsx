@@ -92,14 +92,10 @@ class MainEditor extends React.Component<EditorProps, EditorState> {
     const { props } = this;
 
     graph.on(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-expect-error
       EditorEvent.onBeforeExecuteCommand,
       props[EditorEvent.onBeforeExecuteCommand]
     );
     graph.on(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-expect-error
       EditorEvent.onAfterExecuteCommand,
       props[EditorEvent.onAfterExecuteCommand]
     );

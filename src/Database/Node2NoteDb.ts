@@ -100,7 +100,7 @@ export class NodeFunctions extends ADbFunctions {
     );
   }
 
-  async updateNoteToNode2Note(MindMapNodeId: string, noteId: number) {
+  async moveNoteToNewNode2Note(MindMapNodeId: string, noteId: number) {
     const oldMindMapNodeId = await this.getNodeIdByNoteId(noteId);
     if (MindMapNodeId !== oldMindMapNodeId) {
       this.deleteNoteIdFromNode2Note(oldMindMapNodeId, noteId);

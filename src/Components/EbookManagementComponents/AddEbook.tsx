@@ -26,9 +26,10 @@ export const AddEbook: React.FunctionComponent<AddEbookProps> = (props) => {
       const fileHashed = String(SHA256(item.blob));
 
       if ((await dbClass.haveSameEbookContent(fileHashed)) === true) {
-        alert(
-          `This ebook is already in the database. ${fileName} has been added before.`
-        );
+        window.api.browserWindow.infoDialog({
+          message: `This ebook is already in the database. ${fileName} has been added before.`,
+          type: "info",
+        });
       } else {
         booksCounts = await dbClass.addNewEbook(fileName, fileHashed);
         props.ebookBlobClassObject.addBook({

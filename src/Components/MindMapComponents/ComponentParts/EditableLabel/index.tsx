@@ -42,8 +42,6 @@ class EditableLabel extends React.Component<
     const { graph } = this.props;
 
     graph.on(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-expect-error
       EditorEvent.onLabelStateChange,
       ({ labelState }: LabelStateEvent) => {
         if (labelState === LabelState.Show) {

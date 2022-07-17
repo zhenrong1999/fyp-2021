@@ -84,7 +84,10 @@ export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
         await dbClass
           .addNewNote(onChangeNoteContent, onChangeEbook.EbookId)
           .catch((err) => {
-            alert("Adding Note \n" + err);
+            window.api.browserWindow.infoDialog({
+              message: "Adding Note \n" + err,
+              type: "error",
+            });
           })
           .then((noteId) => {
             if (noteId) {
@@ -95,7 +98,10 @@ export const AddNoteButton: React.FunctionComponent<AddNoteButtonProps> = (
               dbClass
                 .addNewNoteToNode2Note(onChangeMindMapNodeId, noteId)
                 .catch((err) => {
-                  alert("Adding Node2Note \n" + err);
+                  window.api.browserWindow.infoDialog({
+                    message: "Adding Node2Note \n" + err,
+                    type: "error",
+                  });
                 });
             }
           });
