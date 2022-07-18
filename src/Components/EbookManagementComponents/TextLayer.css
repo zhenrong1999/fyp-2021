@@ -3,7 +3,6 @@
   margin-right: auto;
 }
 .DocumentRendered {
-  /* flex: 1; */
   position: relative;
   overflow: scroll;
   height: 100%;

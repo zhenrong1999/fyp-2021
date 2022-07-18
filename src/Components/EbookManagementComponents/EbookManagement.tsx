@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { EbookList, EbookViewer } from ".";
 
-import { ProviderProps, Flex } from "@fluentui/react-northstar";
+import { ProviderProps } from "@fluentui/react-northstar";
 import "./EbookManagement.css";
 import {
   IEbooksContent,
@@ -61,7 +61,6 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
         {...props}
         className="ebookManagementRightPanel"
         ebookSelected={ebookSelected}
-        // setEbookSelected={onChange}
       />
 
       <EbookViewer
@@ -69,7 +68,6 @@ export const EbookManagement: React.FunctionComponent<EbookManagementProps> = (
         className="pdfViewer"
         fileBlob={fileBlob}
         ebookSelected={ebookSelected}
-        // setEbookSelected={onChange}
       />
     </div>
   );

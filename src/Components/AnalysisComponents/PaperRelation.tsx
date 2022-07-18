@@ -28,9 +28,6 @@ interface PaperRelationProps
 export const PaperRelation: React.FC<PaperRelationProps> = (
   props: PaperRelationProps
 ) => {
-  // const nodes2Ebooks = useLiveQuery(() => getNodesToEbook(), []);
-
-  // const graphData = props.graphClass.save();
   const initGraphLayout: LayoutConfig = {
     type: "radial",
     linkDistance: 210,
@@ -44,17 +41,10 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
   const [graphData, setGraphData] = React.useState<GraphData>();
   const [IsEbookIdShared, setIsEbookIdShared] = React.useState<boolean>(false);
 
-  // getNodesToEbook().then((nodesToEbook) => {
-  //   console.log("graphData", nodesToEbook);
-  //   setGraphData(nodesToEbook);
-  // });
-
   React.useEffect(() => {
     if (!graph) {
       const newGraph: Graph = new G6.Graph({
         container: ref.current,
-        // width: 1200,
-        // height: 800,
         fitView: true,
         modes: {
           default: ["drag-canvas", "zoom-canvas"],
@@ -106,7 +96,6 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
       };
       getNodesToEbook(IsEbookIdShared).then((nodesToEbook) => {
         console.log("graphData", nodesToEbook);
-        // setGraphData(nodesToEbook);
         if (nodesToEbook) {
           for (let index = 0; index < nodesToEbook.nodes.length; index++) {
             const node = nodesToEbook.nodes[index];
@@ -116,7 +105,6 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
               type: "diamond",
             };
             result.nodes.push(nodeConfig);
-            // result.nodes.push(node);
           }
 
           for (let index = 0; index < nodesToEbook.edges.length; index++) {
@@ -143,15 +131,11 @@ export const PaperRelation: React.FC<PaperRelationProps> = (
   }, [IsEbookIdShared, graph, graphData, props.graphClass]);
 
   return (
-    <Flex
-      // style={{ width: "100%", height: "100%" }}
-      fill
-    >
+    <Flex fill>
       <div
         style={{
           width: "75%",
           height: "100%",
-          // overflow: "scroll",
         }}
         ref={ref}
       ></div>

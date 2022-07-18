@@ -6,19 +6,19 @@ import {
 } from "../../src/Database/interface";
 
 const testEbookItem: IEbooksContent = {
-  title: "testBook",
+  title: "testBook.pdf",
   fileHash: "a1b3",
   fileName: "testBook.pdf",
   NoteList: [],
 };
 
 const testEbookItem2: IEbooksContent = {
-  title: "testBook2",
+  title: "testBook2.pdf",
   fileHash: "a1b32",
   fileName: "testBook2.pdf",
   NoteList: [],
 };
-const testNode2NoteItem: INode2Note = { MindMapNodeId: "0", NoteList: [0] };
+const testNode2NoteItem: INode2Note = { MindMapNodeId: "0", NoteList: [] };
 const testNoteItem: INoteContent = {
   NoteContent: "test",
 };
@@ -40,11 +40,10 @@ afterAll((done) => {
 
 describe("Database", () => {
   afterEach(clearDatabase);
-  it("deleted note should not appear at any places", async () => {
+  it("delete note that appear in eBook and Node2NotesArray", async () => {
     const noteId = await dbClass.addNewNote(testNoteItem.NoteContent);
-    let nodeId;
     if (testNode2NoteItem.NoteList) {
-      nodeId = await dbClass.addNewNoteToNode2Note(
+      await dbClass.addNewNoteToNode2Note(
         testNode2NoteItem.MindMapNodeId,
         noteId
       );
@@ -74,6 +73,59 @@ describe("Database", () => {
       });
     });
   });
+
+  it("delete note that appear in Node2NotesArray", async () => {
+    const noteId = await dbClass.addNewNote(testNoteItem.NoteContent);
+    if (testNode2NoteItem.NoteList) {
+      await dbClass.addNewNoteToNode2Note(
+        testNode2NoteItem.MindMapNodeId,
+        noteId
+      );
+    }
+    await dbClass.deleteNote(noteId).then(async () => {
+      await dbClass.getNotesArray().then((count) => {
+        expect(count.length).toBe(0);
+      });
+      await dbClass.getNode2NotesArray().then((count) => {
+        expect(count.length).toBe(1);
+        expect(count[0].NoteList?.length).toBe(0);
+      });
+    });
+  });
+
+  it("delete note that appear in eBook", async () => {
+    const noteId = await dbClass.addNewNote(testNoteItem.NoteContent);
+    const ebookId = await dbClass.addNewEbook(
+      testEbookItem.fileName,
+      testEbookItem.fileHash
+    );
+    await dbClass.updateNoteContentAndEbookId(
+      noteId,
+      testNoteItem2.NoteContent,
+      ebookId
+    );
+    await dbClass.deleteNote(noteId).then(async () => {
+      await dbClass.getNotesArray().then((count) => {
+        expect(count.length).toBe(0);
+      });
+      await dbClass.getEbookCounts().then((count) => {
+        expect(count).toBe(1);
+      });
+      await dbClass.getEbook(ebookId).then((count) => {
+        expect(count?.NoteList.length).toBe(0);
+      });
+    });
+  });
+
+  it("delete note that is in note only", async () => {
+    const noteId = await dbClass.addNewNote(testNoteItem.NoteContent);
+    await dbClass.deleteNote(noteId).then(async () => {
+      await dbClass.getNotesArray().then((count) => {
+        expect(count.length).toBe(0);
+      });
+    });
+  });
+
   it("update note content and ebook id", async () => {
     const noteId = await dbClass.addNewNote(testNoteItem.NoteContent);
     const ebookId = await dbClass.addNewEbook(
@@ -112,6 +164,43 @@ describe("Database", () => {
     });
   });
 
+  it("add new note without node and ebook", async () => {
+    const noteId = await dbClass.addNewNote(
+      testNoteItem.NoteContent,
+      undefined
+    );
+    expect(noteId).toBeDefined();
+    await dbClass.getNote(noteId).then((note) => {
+      expect(note?.NoteContent).toBe(testNoteItem.NoteContent);
+      expect(note?.EbookId).toBeUndefined();
+    });
+  });
+
+  it("add new note with node", async () => {
+    const noteId = await dbClass.addNewNote(
+      testNoteItem.NoteContent,
+      undefined
+    );
+    if (testNode2NoteItem.NoteList) {
+      await dbClass.addNewNoteToNode2Note(
+        testNode2NoteItem.MindMapNodeId,
+        noteId
+      );
+    }
+    expect(noteId).toBeDefined();
+    await dbClass.getNote(noteId).then((note) => {
+      expect(note?.NoteContent).toBe(testNoteItem.NoteContent);
+    });
+
+    await dbClass.getNode2NotesArray().then((count) => {
+      expect(count[0].MindMapNodeId).toBe(testNode2NoteItem.MindMapNodeId);
+      if (count[0].NoteList) {
+        expect(count[0].NoteList.length).toBe(1);
+        expect(count[0].NoteList[0]).toBe(noteId);
+      }
+    });
+  });
+
   it("add new note with eBook", async () => {
     const ebookId = await dbClass.addNewEbook(
       testEbookItem.fileName,
@@ -122,6 +211,43 @@ describe("Database", () => {
     await dbClass.getNote(noteId).then((note) => {
       expect(note?.NoteContent).toBe(testNoteItem.NoteContent);
       expect(note?.EbookId).toBe(ebookId);
+    });
+  });
+
+  it("add new note with node and ebook", async () => {
+    const ebookId = await dbClass.addNewEbook(
+      testEbookItem.fileName,
+      testEbookItem.fileHash
+    );
+    const noteId = await dbClass.addNewNote(testNoteItem.NoteContent, ebookId);
+    if (testNode2NoteItem.NoteList) {
+      await dbClass.addNewNoteToNode2Note(
+        testNode2NoteItem.MindMapNodeId,
+        noteId
+      );
+    }
+    expect(noteId).toBeDefined();
+    await dbClass.getNote(noteId).then((note) => {
+      expect(note?.NoteContent).toBe(testNoteItem.NoteContent);
+      expect(note?.EbookId).toBe(ebookId);
+    });
+
+    await dbClass.getNode2NotesArray().then((count) => {
+      expect(count[0].MindMapNodeId).toBe(testNode2NoteItem.MindMapNodeId);
+      if (count[0].NoteList) {
+        expect(count[0].NoteList.length).toBe(1);
+        expect(count[0].NoteList[0]).toBe(noteId);
+      }
+    });
+
+    dbClass.getEbook(ebookId).then((ebook) => {
+      if (ebook !== undefined) {
+        expect(ebook.title).toBe(testEbookItem.title);
+        expect(ebook.fileHash).toBe(testEbookItem.fileHash);
+        expect(ebook.fileName).toBe(testEbookItem.fileName);
+        expect(ebook.NoteList.length).toBe(1);
+        expect(ebook.NoteList[0]).toBe(noteId);
+      }
     });
   });
 

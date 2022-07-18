@@ -3,6 +3,7 @@ module.exports = {
   rootDir: ".",
   collectCoverage: true,
   collectCoverageFrom: ["<rootDir>/src/Database/*"],
+  // coverageReporters: ["text-summary", "cobertura", "html", "json-summary"],
   transform: {
     "^.+\\.tsx?$": "ts-jest",
     // "^.+\\.[j|t]sx?$": "babel-jest",

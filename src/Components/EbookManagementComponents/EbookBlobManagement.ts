@@ -1,5 +1,6 @@
 import React from "react";
 import { pdfjs } from "react-pdf";
+//importing types from pdfjs library
 import { TypedArray, TextItem } from "pdfjs-dist/types/src/display/api";
 pdfjs.GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.js";
 import { Buffer } from "buffer";
@@ -73,7 +74,6 @@ export class EbookBlobManagement {
     return this.ebookBlobList.filter((book) => {
       return book.text.join("\n").match(`/${searchText}/i`) !== undefined;
     });
-    // return this.ebookBlobList.filter((book) => book.text.includes(searchText));
   }
 }
 

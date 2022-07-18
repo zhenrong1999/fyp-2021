@@ -20,7 +20,6 @@ import {
   ebookSelected,
   IEbooksContent,
 } from "../Global/interface";
-import { EbookContext } from "../Global/context";
 
 interface EbookListProps
   extends ProviderProps,
@@ -32,7 +31,6 @@ interface EbookListProps
 }
 
 export const EbookList: React.FunctionComponent<EbookListProps> = (props) => {
-  // const ebookContextTest = React.useContext(EbookContext);
   const ebookObj: IEbooksContent = JSON.parse(props.ebookSelected);
   const ebookSize = useLiveQuery(async () => {
     return dbClass.getEbookCounts();

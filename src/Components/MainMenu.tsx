@@ -7,19 +7,13 @@ import {
   teamsTheme,
   Menu,
   MenuItemProps,
-  Button,
   Flex,
-  Box,
 } from "@fluentui/react-northstar";
-import { LoadingPage } from "./Utils/LoadingPage";
-import { SaveMindMap } from "./Utils/SaveMindMap";
 import { EbookBlobManagement } from "./EbookManagementComponents/EbookBlobManagement";
-import { OpenMindMap } from "./Utils/OpenMindMap";
 import { CommandManager } from "./MindMapComponents";
 import { IEbooksContent, MindMapInterface } from "./Global/interface";
 import { Graph } from "./MindMapComponents/common/interfaces";
 import { dbClass } from "./Global/constant";
-import { EbookContext } from "./Global/context";
 
 export const MainMenu: React.FunctionComponent = () => {
   const [MenuIndex, setMenuIndex] = React.useState(0);
@@ -34,18 +28,6 @@ export const MainMenu: React.FunctionComponent = () => {
   const [executeCommand, setExecuteCommand] =
     React.useState<(name: string, params?: object) => void>();
   const [commandManager, setCommandManager] = React.useState<CommandManager>();
-  // const [changePage, setChangePage] = React.useState<React.ReactNode>(
-  //   <MainMindMap
-  //     graphData={graph}
-  //     setGraphData={setGraph}
-  //     graphClass={graphClass}
-  //     setGraphClass={setGraphClass}
-  //     commandManager={commandManager}
-  //     setCommandManager={setCommandManager}
-  //     executeCommand={executeCommand}
-  //     setExecuteCommand={setExecuteCommand}
-  //   />
-  // );
   const [ebookSelected, setEbookSelected] = React.useState<string>(
     JSON.stringify({
       EbookId: -1,
@@ -68,47 +50,6 @@ export const MainMenu: React.FunctionComponent = () => {
     console.log(props.index);
     // eslint-disable-next-line react/prop-types
     setMenuIndex(props.index);
-    // eslint-disable-next-line react/prop-types
-    // const MenuIndex = props.index;
-    // if (MenuIndex === 0) {
-    //   setChangePage(
-    //     <MainMindMap
-    //       graphData={graph}
-    //       setGraphData={setGraph}
-    //       graphClass={graphClass}
-    //       setGraphClass={setGraphClass}
-    //       commandManager={commandManager}
-    //       setCommandManager={setCommandManager}
-    //       executeCommand={executeCommand}
-    //     />
-    //   );
-    // } else if (MenuIndex === 1) {
-    //   setChangePage(
-    //     <EbookManagement
-    //       // ebookSelected={ebookSelected}
-    //       // setEbookSelected={setEbookSelected}
-    //       ebookBlobClassObject={ebookBlobList}
-    //       setEbookBlobClassObject={setEbookBlobList}
-    //       graphClass={graphClass}
-    //       setGraphClass={setGraphClass}
-    //       executeCommand={executeCommand}
-    //       commandManager={commandManager}
-    //       ebookSelected={ebookSelected}
-    //       setEbookSelectedMain={onChangeEbookSelected}
-    //     />
-    //   );
-    // } else if (MenuIndex === 2) {
-    //   setChangePage(
-    //     <AnalysisComponents
-    //       ebookBlobClassObject={ebookBlobList}
-    //       setEbookBlobClassObject={setEbookBlobList}
-    //       graphClass={graphClass}
-    //       setGraphClass={setGraphClass}
-    //       executeCommand={executeCommand}
-    //       commandManager={commandManager}
-    //     />
-    //   );
-    // }
   }
 
   React.useEffect(() => {
@@ -205,15 +146,7 @@ export const MainMenu: React.FunctionComponent = () => {
             )}
 
             {MenuIndex === 1 && (
-              // <EbookContext.Provider
-              //   value={{
-              //     ebookSelected: ebookSelected,
-              //     setEbookSelected: setEbookSelected,
-              //   }}
-              // >
               <EbookManagement
-                // ebookSelected={ebookSelected}
-                // setEbookSelected={setEbookSelected}
                 ebookBlobClassObject={ebookBlobList}
                 setEbookBlobClassObject={setEbookBlobList}
                 graphClass={graphClass}
@@ -223,7 +156,6 @@ export const MainMenu: React.FunctionComponent = () => {
                 ebookSelected={ebookSelected}
                 setEbookSelectedMain={onChangeEbookSelected}
               />
-              // </EbookContext.Provider>
             )}
             {MenuIndex === 2 && (
               <AnalysisComponents

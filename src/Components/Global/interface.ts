@@ -48,7 +48,4 @@ export interface MindMapEditorContextProps {
   commandManager: CommandManager | undefined;
 }
 
-export {
-  Interface as MindMapInterface,
-  // EditorContextProps as MindMapEditorContextProps,
-};
+export { Interface as MindMapInterface };

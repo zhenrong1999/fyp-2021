@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  ProviderProps,
-  Button,
-  Dialog,
-  Header,
-  TrashCanIcon,
-} from "@fluentui/react-northstar";
+import { ProviderProps, Button, TrashCanIcon } from "@fluentui/react-northstar";
 import { dbClass } from "../Global/constant";
 import {
   EbookBlobManagementEditableProps,

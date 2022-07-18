@@ -15,16 +15,8 @@ import { EditorContextProps } from "../EditorContext";
 import { DetailPanelComponentProps } from "../DetailPanel";
 import { NodeConfig, EdgeConfig, ComboConfig } from "@antv/g6";
 import { NotePanel } from "../../../NoteComponents";
-import { toNumber } from "lodash";
 import { NodePath } from "../NodePath";
-import { TreeGraph, Node, Edge } from "../../common/interfaces";
-import { ItemState } from "../../common/constants";
-import {
-  executeBatch,
-  getMindRecallEdges,
-  setHighLightState,
-  clearHighLightState,
-} from "../../common/utils";
+import { setHighLightState, clearHighLightState } from "../../common/utils";
 import { capitalize } from "lodash";
 
 interface PanelProps
@@ -54,7 +46,6 @@ class Panel extends React.Component<PanelProps, PanelState> {
   }
   componentDidMount() {
     const { panelType, nodes, edges } = this.props;
-    // let label = "";
     let targetModel: NodeConfig | EdgeConfig | ComboConfig;
     if (panelType === "node") {
       targetModel = nodes[0].getModel();
@@ -67,11 +58,6 @@ class Panel extends React.Component<PanelProps, PanelState> {
     this.setState({ TargetModel: targetModel });
 
     if (targetModel) {
-      // const unknownTypeLabel = targetModel.label;
-      // if (typeof unknownTypeLabel === "string") {
-      //   label = unknownTypeLabel;
-      // }
-
       this.setState({ changedValue: targetModel.label as string });
     }
   }
@@ -131,7 +117,6 @@ class Panel extends React.Component<PanelProps, PanelState> {
     if (!item) {
       return;
     }
-    // e.currentTarget.value as typeOf Input;
     executeCommand("update", {
       id: item.get("id"),
       updateModel: {
@@ -151,15 +136,11 @@ class Panel extends React.Component<PanelProps, PanelState> {
   onChangeHandler = (event: any) => {
     const target = event.target;
     const value = target.type === "FormInput" ? target.checked : target.value;
-    // const name = target.name;
 
     this.setState({ changedValue: value });
     this.setState({
       labelStatus: { state: "error", icon: <BanIcon />, title: "unsaved" },
     });
-    // this.setState({
-    //   [name]: value,
-    // });
   };
 
   mapPropsToFields = () => {
@@ -263,34 +244,6 @@ class Panel extends React.Component<PanelProps, PanelState> {
     );
   }
 }
-
-// const WrappedPanel = Form.create({
-//   component: "Form",
-// } as ShortHandFactory)(Panel)();
-
-// const WrappedPanel = Form.create(
-//   mapPropsToFields(props)
-// )(withEditorContext(Panel));
-
-// function mapPropsToFields2(props: any) {
-//   const { panelType, nodes, edges } = props;
-//   let label = "";
-//   if (panelType === "node") {
-//     const unknownTypeLabel = nodes[0].getModel().label;
-//     if (typeof unknownTypeLabel === "string") {
-//       label = unknownTypeLabel;
-//     }
-//   }
-
-//   if (panelType === "edge") {
-//     const unknownTypeLabel = edges[0].getModel().label;
-//     if (typeof unknownTypeLabel === "string") {
-//       label = unknownTypeLabel;
-//     }
-//   }
-// }
-
-// type WrappedPanelProps = Omit<PanelProps, keyof FormFieldProps>;
 
 export const NodePanel = DetailPanel.create<PanelProps>("node")(Panel);
 export const EdgePanel = DetailPanel.create<PanelProps>("edge")(Panel);

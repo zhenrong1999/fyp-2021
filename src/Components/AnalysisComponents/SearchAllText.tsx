@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { PDFDocumentProxy } from "pdfjs-dist";
-// import { pdfjs } from "react-pdf";
-// import PDFJSWorker from "pdfjs-dist/build/pdf.worker.js";
-// import { TypedArray, TextItem } from "pdfjs-dist/types/src/display/api";
-// import { TextItem } from "react-pdf";
 import React from "react";
 import {
   Flex,
   Form,
-  Input,
   Text,
   Tree,
   ProviderProps,
@@ -17,7 +11,6 @@ import {
   TreeItemProps,
   FormInput,
   FormButton,
-  ObjectShorthandValue,
 } from "@fluentui/react-northstar";
 import {
   MindMapEditorContextProps,
@@ -27,32 +20,7 @@ import { useLiveQuery, dbClass } from "../Global/constant";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library, IconProp } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
-import lodash from "lodash";
 library.add(fas);
-// import { Buffer } from "buffer";
-
-// pdfjs.GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.js";
-
-// const getPageText = async (pdf: pdfjs.PDFDocumentProxy, pageNo: number) => {
-//   const page = await pdf.getPage(pageNo);
-//   const tokenizedText = await page.getTextContent();
-//   const pageText = tokenizedText.items
-//     .map((token: TextItem) => token.str)
-//     .join("");
-//   return pageText;
-// };
-
-// /* see example of a PDFSource below */
-// export const getPDFText = async (source: TypedArray): Promise<string[]> => {
-//   const pdf = await pdfjs.getDocument(source).promise;
-//   const maxPages = pdf.numPages;
-//   const pageTextPromises = [];
-//   for (let pageNo = 1; pageNo <= maxPages; pageNo += 1) {
-//     pageTextPromises.push(getPageText(pdf, pageNo));
-//   }
-//   const pageTexts = await Promise.all(pageTextPromises);
-//   return pageTexts;
-// };
 
 function highlightPattern(text: string, pattern: string | RegExp) {
   const splitText = text.split(pattern);

@@ -6,7 +6,7 @@ import {
 } from "../../src/Database/interface";
 const testEbookItem: IEbooksContent = {
   EbookId: 1,
-  title: "testBook",
+  title: "testBook.pdf",
   fileHash: "a1b3",
   fileName: "testBook.pdf",
   NoteList: [],
@@ -14,7 +14,7 @@ const testEbookItem: IEbooksContent = {
 
 const testEbookItem2: IEbooksContent = {
   EbookId: 2,
-  title: "testBook2",
+  title: "testBook2.pdf",
   fileHash: "a1b32",
   fileName: "testBook2.pdf",
   NoteList: [],
@@ -66,7 +66,7 @@ describe("Ebook DB test", () => {
     expect(ebookObject?.title).toBe(title);
   });
 
-  it("delete eBook", async () => {
+  it("delete eBook that has a note referring to it", async () => {
     const EbookId: number = testEbookItem.EbookId ? testEbookItem.EbookId : -1;
     await dbClass.getNotesArray().then(async (notes) => {
       if (notes[0].NoteId) {
@@ -80,9 +80,22 @@ describe("Ebook DB test", () => {
     await dbClass.deleteEbook(EbookId);
     const ebookObject = await dbClass.getDbInstance().ebooksTable.get(EbookId);
     expect(ebookObject).toBe(undefined);
+    await dbClass.getEbookCounts().then((count) => {
+      expect(count).toBe(0);
+    });
     await dbClass.getNotesArray().then((notes) => {
       expect(notes.length).toBe(1);
       expect(notes[0].EbookId).toBeUndefined();
+    });
+  });
+
+  it("delete eBook that does not have any note referring to it", async () => {
+    const EbookId: number = testEbookItem.EbookId ? testEbookItem.EbookId : -1;
+    await dbClass.deleteEbook(EbookId);
+    const ebookObject = await dbClass.getDbInstance().ebooksTable.get(EbookId);
+    expect(ebookObject).toBe(undefined);
+    await dbClass.getEbookCounts().then((count) => {
+      expect(count).toBe(0);
     });
   });
 

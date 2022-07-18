@@ -124,7 +124,6 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
               onClick: () => {
                 onClickNode(item.id);
                 props.commandManager.execute(props.graph, EditorCommand.Topic);
-                // props.executeCommand(EditorCommand.Topic);
                 checkIfSetSelectedNode();
               },
             });
@@ -159,7 +158,6 @@ export const NodePath: React.FC<NodePathProps> = (props: NodePathProps) => {
           content="Add SubTopic/Child Node"
           onClick={() => {
             props.commandManager.execute(props.graph, EditorCommand.Subtopic);
-            // props.executeCommand(EditorCommand.Subtopic);
             checkIfSetSelectedNode();
           }}
         />

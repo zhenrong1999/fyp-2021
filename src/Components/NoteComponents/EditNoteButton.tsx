@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ProviderProps,
-  Button,
-  Dialog,
-  Header,
-} from "@fluentui/react-northstar";
+import { ProviderProps, Button, Dialog } from "@fluentui/react-northstar";
 import { NoteField } from "./NoteField";
 import { dbClass } from "../Global/constant";
 import {
@@ -13,7 +8,6 @@ import {
   MindMapEditorContextProps,
 } from "../Global/interface";
 import { INode2NoteEditable } from "./NoteInterface";
-import { useLiveQuery } from "dexie-react-hooks";
 
 interface EditNoteButtonProps
   extends ProviderProps,
@@ -76,7 +70,6 @@ export const EditNoteButton: React.FunctionComponent<EditNoteButtonProps> = (
       header="Edit Note"
       trigger={<Button content="Edit Note" />}
       onConfirm={() => {
-        // props.setNote(onChangeNote);
         dbClass.updateNoteContentAndEbookId(
           props.noteId,
           onChangeNoteContent,

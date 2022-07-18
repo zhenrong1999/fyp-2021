@@ -81,7 +81,6 @@ function highlightPattern(text: string, pattern: string) {
 export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
   props
 ) => {
-  // const ebookContextTest = React.useContext(EbookContext);
   const [numPages, setNumPages] = React.useState(null);
   const [pageNumber, setPageNumber] = React.useState(1);
   const [currentSearchItem, setCurrentSearchItem] = React.useState(0);
@@ -157,11 +156,6 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
               onClick: () => {
                 const height = divRef.current.offsetHeight;
                 divRef.current.scrollBy(0, -height);
-                // window.dispatchEvent(
-                //   new KeyboardEvent("keypress", {
-                //     key: "PageUp",
-                //   })
-                // );
               },
             },
             {
@@ -172,11 +166,6 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
               onClick: () => {
                 const height = divRef.current.offsetHeight;
                 divRef.current.scrollBy(0, height);
-                //   window.dispatchEvent(
-                //   new KeyboardEvent("keypress", {
-                //     key: "PageDown",
-                //   })
-                // );
               },
             },
             {
@@ -342,11 +331,6 @@ export const EbookViewer: React.FunctionComponent<EbookViewerProps> = (
                           icon={"magnifying-glass" as IconProp}
                         />
                       }
-                      // styles={{
-                      //   padding: props.padding,
-                      //   height: '64px',
-                      //   minWidth: '64px',
-                      // }}
                       title="Search Text"
                     />
                   }
