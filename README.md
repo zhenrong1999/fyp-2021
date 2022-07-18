@@ -24,6 +24,12 @@ Publish the application
 yarn publish
 ```
 
+Run tests of Project Using Jest
+
+```bash
+yarn test
+```
+
 ## Credits
 The MindMapComponents heavily reused the codes from [GGEditor](https://github.com/alibaba/GGEditor).
 This application uses Open Source components. You can find the source code of their open source projects along with license information below. We acknowledge and are grateful to these developers for their contributions to open source.
