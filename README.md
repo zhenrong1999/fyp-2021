@@ -6,6 +6,8 @@ A project that aims towards researcher in aiding drawing mind map while reading 
 
 ## Development of Project
 
+Require Node ([Version ≥ 18.6.0](https://nodejs.org/en/download/current/)) and Yarn ([Installatinon Guide](https://classic.yarnpkg.com/en/docs/install#windows-stable)).
+
 Install dependency
 
 ```bash
